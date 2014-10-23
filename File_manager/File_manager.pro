@@ -1,20 +1,13 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-10-23T18:28:00
-#
-#-------------------------------------------------
-
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TARGET = File_manager
 TEMPLATE = app
 
+QT += qml quick widgets
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += main.cpp
 
-HEADERS  += mainwindow.h
+RESOURCES += qml.qrc
 
-FORMS    += mainwindow.ui
+# Additional import path used to resolve QML modules in Qt Creator's code model
+QML_IMPORT_PATH =
+
+# Default rules for deployment.
+include(deployment.pri)
