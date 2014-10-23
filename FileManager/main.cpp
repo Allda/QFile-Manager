@@ -1,5 +1,7 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include <qdebug.h>
+#include "directory.h"
 
 int main(int argc, char *argv[])
 {
