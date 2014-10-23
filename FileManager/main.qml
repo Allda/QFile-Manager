@@ -10,8 +10,59 @@ ApplicationWindow {
     minimumHeight: 480
     title: "File Manager"
 
+    /* */
+
+    menuBar: MenuBar {
+        Menu {
+            title: "File"
+
+            MenuItem {
+                text: "New file"
+                shortcut: "Ctrl+N"
+                iconSource: "icons/new.png"
+            }
+
+            MenuItem {
+                text: "Open file"
+                shortcut: "Ctrl+O"
+                iconSource: "icons/open.png"
+            }
+
+            MenuItem {
+                text: "Save file"
+                shortcut: "Ctrl+S"
+                iconSource: "icons/save.png"
+            }
+
+            MenuSeparator { }
+
+            MenuItem {
+                text: "Exit"
+                shortcut: "Ctrl+E"
+            }
+        }
+
+        Menu {
+            title: "Settings"
+
+            MenuItem {
+                text: "Colors"
+            }
+        }
+
+        Menu {
+            title: "Help"
+
+            MenuItem {
+                text: "About"
+            }
+        }
+    }
+
+    /*  */
 
     toolBar: ToolBar {
+        id: tool
         RowLayout {
             width: parent.width
             ToolButton {
@@ -26,50 +77,83 @@ ApplicationWindow {
                 text: "Save file"
                 iconSource: "icons/save.png"
             }
-            Slider {
-                Layout.fillWidth: true
-            }
-            TextField {
 
+            TextField {
+                Layout.fillWidth: true
+                anchors.right: parent.right
             }
         }
     }
 
+    /* */
 
     SplitView {
+        id: split
         anchors.fill: parent
-        TableView {
-            TableViewColumn {
-                title: "Name"
+
+        SplitView {
+            id: split2
+            orientation: Qt.Vertical
+            width: parent.width / 2
+
+            TextField {
+                placeholderText: "Zde bude adresa"
             }
-            TableViewColumn {
-                title: "Type"
-            }
-            TableViewColumn {
-                title: "Size"
+
+            TableView {
+
+                TableViewColumn {
+                    title: "Name"
+                }
+                TableViewColumn {
+                    title: "Type"
+                    width: 50
+                }
+                TableViewColumn {
+                    title: "Size"
+                    width: 100
+                }
             }
         }
 
-        TableView {
-            TableViewColumn {
-                title: "Name"
+        SplitView {
+            id: split3
+            orientation: Qt.Vertical
+
+            TextField {
+                placeholderText: "Zde bude adresa"
             }
-            TableViewColumn {
-                title: "Type"
-            }
-            TableViewColumn {
-                title: "Size"
+
+            TableView {
+                TableViewColumn {
+                    title: "Name"
+                }
+                TableViewColumn {
+                    title: "Type"
+                    width: 50
+                }
+                TableViewColumn {
+                    title: "Size"
+                    width: 100
+                }
             }
         }
     }
 
-    statusBar: StatusBar {
-        Label {
-            id: label
-            text: "Zde muze byt cokoliv"
-        }
-        ProgressBar {
+    /* */
 
+    statusBar: StatusBar {
+        RowLayout {
+            width: parent.width
+            Label {
+                id: label
+                text: "Zde muze byt cokoliv | ProgressBar muze ukazovat symbolicky cas do dokonceni operace"
+                Layout.fillWidth: true
+                elide: Text.ElideMiddle
+            }
+            ProgressBar {
+
+            }
         }
     }
 }
