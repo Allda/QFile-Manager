@@ -62,4 +62,14 @@ ApplicationWindow {
             }
         }
     }
+
+    statusBar: StatusBar {
+        Label {
+            id: label
+            text: "Zde muze byt cokoliv"
+        }
+        ProgressBar {
+
+        }
+    }
 }
