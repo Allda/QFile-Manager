@@ -1,6 +1,10 @@
 #include "directory.h"
 #include <QDebug>
 
+Directory::Directory() {
+
+}
+
 Directory::Directory(QString dir)
 {
     this->dir = dir;

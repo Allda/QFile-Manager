@@ -4,9 +4,10 @@
 #include <QList>
 #include <QDir>
 #include <QStringList>
-class Directory
+class Directory : public QObject
 {
 public:
+    Directory();
     Directory(QString dir);
     void loadFiles();
     void addToSelected(QString item);

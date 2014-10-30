@@ -1,6 +1,7 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
+import directory 1.0
 
 ApplicationWindow {
     visible: true
@@ -95,47 +96,75 @@ ApplicationWindow {
             id: split2
             orientation: Qt.Vertical
             width: parent.width / 2
+            Layout.minimumWidth: parent.width / 2
+            Layout.maximumWidth: parent.width / 2
 
             TextField {
                 placeholderText: "Zde bude adresa"
+                Layout.minimumHeight: 20
+                Layout.maximumHeight: 20
+            }
+
+            ListModel {
+                id: listmodel
+                ListElement { Name: "Starý soubor"; Type: "virus"; Size: "2000 TBytes" }
             }
 
             TableView {
 
                 TableViewColumn {
+                    role: "Name"
                     title: "Name"
                 }
                 TableViewColumn {
+                    role: "Type"
                     title: "Type"
                     width: 50
                 }
                 TableViewColumn {
+                    role: "Size"
                     title: "Size"
                     width: 100
                 }
+
+                model:listmodel
             }
+
         }
 
         SplitView {
             id: split3
             orientation: Qt.Vertical
+            resizing: false
 
             TextField {
                 placeholderText: "Zde bude adresa"
+                Layout.minimumHeight: 20
+                Layout.maximumHeight: 20
+            }
+
+            ListModel {
+                id: listmodel2
+                ListElement { Name: "Nový soubor"; Type: "exe"; Size: "2000 Bytes" }
             }
 
             TableView {
                 TableViewColumn {
+                    role: "Name"
                     title: "Name"
                 }
                 TableViewColumn {
+                    role: "Type"
                     title: "Type"
                     width: 50
                 }
                 TableViewColumn {
+                    role: "Size"
                     title: "Size"
                     width: 100
                 }
+
+                model:listmodel2
             }
         }
     }
@@ -155,5 +184,9 @@ ApplicationWindow {
 
             }
         }
+    }
+
+    Directory {
+        id: dir1
     }
 }
