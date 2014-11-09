@@ -1,22 +1,38 @@
 #include "directory.h"
 #include <QDebug>
+#include <QDir>
+#include "file.h"
 
-Directory::Directory() {
 
-}
-
-Directory::Directory(QString dir)
+Directory::Directory()
 {
-    this->dir = dir;
+    this->dir = QDir::drives().at(0).absolutePath();
+    qDebug() << QDir::drives().at(0).absolutePath();
+    this->loadFiles();
 }
 
 void Directory::loadFiles(){
     QDir directory(this->dir);
     files = directory.entryList();
+    this->m_files.clear();
+    for(int i = 0; i < files.count();i++){
+        qDebug() << files.at(i);
+        this->m_files.append(new File(files.at(i), this->dir));
+    }
+    emit filesChanged ();
 
 }
 
-void Directory::addToSelected(QString item){
+void Directory::changeDir(QString newDir){
+    this->dir = newDir;
+    loadFiles();
+}
+
+QString Directory::getDir(){
+    return dir;
+}
+
+/*void Directory::addToSelected(QString item){
     selectedFiles.append(item);
 }
 
@@ -60,3 +76,7 @@ void Directory::renameSelected(QString newName){
     else
         return;
 }
+
+QString Directory::test2(){
+    return "qweqweqwe";
+}*/

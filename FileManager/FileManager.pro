@@ -1,9 +1,11 @@
 TEMPLATE = app
 
 QT += qml quick widgets
+QT += declarative
 
 SOURCES += main.cpp \
-    directory.cpp
+    directory.cpp \
+    file.cpp
 
 RESOURCES += qml.qrc
 
@@ -14,4 +16,5 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    directory.h
+    directory.h \
+    file.h

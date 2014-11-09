@@ -107,16 +107,16 @@ ApplicationWindow {
 
             ListModel {
                 id: listmodel
-                ListElement { Name: "Starý soubor"; Type: "virus"; Size: "2000 TBytes" }
+                ListElement { Name: "myDir1.test2()" ; Type: "virus"; Size: "2000 TBytes" }
             }
 
             TableView {
 
                 TableViewColumn {
-                    role: "Name"
+                    role: "name"
                     title: "Name"
                 }
-                TableViewColumn {
+                /*TableViewColumn {
                     role: "Type"
                     title: "Type"
                     width: 50
@@ -125,9 +125,10 @@ ApplicationWindow {
                     role: "Size"
                     title: "Size"
                     width: 100
-                }
+                }*/
 
-                model:listmodel
+                model:myDir1.files
+                onActivated: myDir1.changeDir(myDir1.getDir() + "/" +model[currentRow].name)
             }
 
         }
@@ -145,7 +146,7 @@ ApplicationWindow {
 
             ListModel {
                 id: listmodel2
-                ListElement { Name: "Nový soubor"; Type: "exe"; Size: "2000 Bytes" }
+                ListElement { Name: "qwe"; Type: "exe"; Size: "2000 Bytes" }
             }
 
             TableView {
@@ -165,6 +166,7 @@ ApplicationWindow {
                 }
 
                 model:listmodel2
+                //onActivated: console.log(model[currentRow].name)
             }
         }
     }
@@ -186,7 +188,7 @@ ApplicationWindow {
         }
     }
 
-    Directory {
-        id: dir1
+    Directory{
+        id: myDir1
     }
 }
