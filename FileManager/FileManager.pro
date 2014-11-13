@@ -18,3 +18,5 @@ include(deployment.pri)
 HEADERS += \
     directory.h \
     file.h
+
+RC_FILE = myapp.rc

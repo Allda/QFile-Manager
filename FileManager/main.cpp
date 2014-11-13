@@ -15,9 +15,6 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-
-
-
     qmlRegisterType<Directory>("directory", 1, 0, "Directory");
 
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
