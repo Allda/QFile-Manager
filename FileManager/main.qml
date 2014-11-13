@@ -115,20 +115,21 @@ ApplicationWindow {
                 TableViewColumn {
                     role: "name"
                     title: "Name"
+
                 }
-                /*TableViewColumn {
-                    role: "Type"
+                TableViewColumn {
+                    role: "type"
                     title: "Type"
                     width: 50
                 }
-                TableViewColumn {
-                    role: "Size"
+                /*TableViewColumn {
+                    role: "size"
                     title: "Size"
                     width: 100
                 }*/
 
                 model:myDir1.files
-                onActivated: myDir1.changeDir(myDir1.getDir() + "/" +model[currentRow].name)
+                onActivated: myDir1.changeDir(myDir1.getDir() + "/" +model[currentRow].wholeName)
             }
 
         }
