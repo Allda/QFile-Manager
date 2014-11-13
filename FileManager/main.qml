@@ -122,11 +122,11 @@ ApplicationWindow {
                     title: "Type"
                     width: 50
                 }
-                /*TableViewColumn {
+                TableViewColumn {
                     role: "size"
                     title: "Size"
                     width: 100
-                }*/
+                }
 
                 model:myDir1.files
                 onActivated: myDir1.changeDir(myDir1.getDir() + "/" +model[currentRow].wholeName)

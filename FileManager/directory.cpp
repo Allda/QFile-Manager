@@ -1,6 +1,9 @@
 #include "directory.h"
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
+#include <QDesktopServices>
+#include <QUrl>
 #include "file.h"
 
 
@@ -24,8 +27,15 @@ void Directory::loadFiles(){
 }
 
 void Directory::changeDir(QString newDir){
-    this->dir = newDir;
-    loadFiles();
+    QFileInfo fi(newDir);
+    if(fi.isDir()){
+        this->dir = newDir;
+        loadFiles();
+    }
+    else{
+        QDesktopServices::openUrl(QUrl(newDir));
+    }
+
 }
 
 QString Directory::getDir(){
