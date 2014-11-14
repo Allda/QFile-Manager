@@ -19,7 +19,7 @@ void Directory::loadFiles(){
     files = directory.entryList();
     this->m_files.clear();
     for(int i = 0; i < files.count();i++){
-        qDebug() << files.at(i);
+        //qDebug() << files.at(i);
         this->m_files.append(new File(files.at(i), this->dir));
     }
     emit filesChanged ();
@@ -29,7 +29,7 @@ void Directory::loadFiles(){
 void Directory::changeDir(QString newDir){
     QFileInfo fi(newDir);
     if(fi.isDir()){
-        this->dir = newDir;
+        this->dir = fi.absoluteFilePath();
         loadFiles();
     }
     else{
