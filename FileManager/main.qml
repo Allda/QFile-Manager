@@ -3,6 +3,8 @@ import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 import directory 1.0
 import diskpartition 1.0
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
 
 ApplicationWindow {
     visible: true
@@ -291,11 +293,7 @@ ApplicationWindow {
                 }
             }
 
-            /* Just a model (I dont know) */
-            ListModel {
-                id: listmodel
-                ListElement { Name: "myDir1.test2()" ; Type: "virus"; Size: "2000 TBytes" }
-            }
+
 
             /* Table of views (2 tabs) */
             TabView {
@@ -303,6 +301,8 @@ ApplicationWindow {
                 Tab {
                     title: "Tab 1"
                     TableView {
+                        selectionMode: SelectionMode.ExtendedSelection
+                        sortIndicatorVisible: true
 
                         TableViewColumn {
                             role: "name"
@@ -325,7 +325,65 @@ ApplicationWindow {
                             myDir1.changeDir(myDir1.getDir() + "/" +model[currentRow].wholeName)
                             addr1.text = myDir1.getDir()
                         }
-                    }
+
+                    /*style: TableViewStyle {
+                        id: tableStyle
+                        headerDelegate: Rectangle{
+                            height: textItem.implicitHeight * 1.2
+                            width: textItem.implicitWidth
+                            color: "#787878"
+                            Text {
+                                id: textItem
+                                anchors.fill: parent
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: styleData.textAlignment
+                                anchors.leftMargin: 12
+                                text: styleData.value
+                                elide: Text.ElideRight
+                                color: "#FFFFFF"
+                                renderType: Text.NativeRendering
+                            }
+                            Rectangle {
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 1
+                                anchors.topMargin: 1
+                                width: 1
+                                color: "#ccc"
+                            }
+                        }
+
+                        rowDelegate: Rectangle{
+                            height: textItem.implicitHeight * 1.2
+                            width: textItem.implicitWidth
+                            color: "#787878"
+                            Text {
+                                id: textItem2
+                                anchors.fill: parent
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: styleData.textAlignment
+                                anchors.leftMargin: 12
+                                text: styleData.value
+                                elide: Text.ElideRight
+                                color: "#FFFFFF"
+                                renderType: Text.NativeRendering
+                            }
+                            Rectangle {
+                                anchors.right: parent.right
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
+                                anchors.bottomMargin: 1
+                                anchors.topMargin: 1
+                                width: 1
+                                color: "#ccc"
+                            }
+                        }
+                    }*/
+
+
+
+                }
             }
 
             /* Second tab */
@@ -428,6 +486,8 @@ ApplicationWindow {
     DiskPartition{
         id: diskP1
     }
+
+
 
 }
 
