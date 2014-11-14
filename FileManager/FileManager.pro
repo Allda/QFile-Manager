@@ -5,7 +5,8 @@ QT += declarative
 
 SOURCES += main.cpp \
     directory.cpp \
-    file.cpp
+    file.cpp \
+    diskpartition.cpp
 
 RESOURCES += qml.qrc
 
@@ -17,6 +18,7 @@ include(deployment.pri)
 
 HEADERS += \
     directory.h \
-    file.h
+    file.h \
+    diskpartition.h
 
 RC_FILE = myapp.rc

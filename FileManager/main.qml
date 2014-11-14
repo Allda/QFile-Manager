@@ -2,6 +2,7 @@ import QtQuick 2.2
 import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 import directory 1.0
+import diskpartition 1.0
 
 ApplicationWindow {
     visible: true
@@ -313,11 +314,11 @@ ApplicationWindow {
                             title: "Type"
                             width: 50
                         }
-                        /*TableViewColumn {
+                        TableViewColumn {
                             role: "size"
                             title: "Size"
                             width: 100
-                        }*/
+                        }
 
                         model:myDir1.files
                         onActivated: {
@@ -422,6 +423,10 @@ ApplicationWindow {
     }
     Directory{
         id: myDir3
+    }
+
+    DiskPartition{
+        id: diskP1
     }
 
 }
