@@ -451,7 +451,7 @@ ApplicationWindow {
                 }
 
                 model:listmodel2
-                //onActivated: console.log(model[currentRow].name)
+                onActivated: console.log(diskP1.diskList[0])
             }
         }
     }

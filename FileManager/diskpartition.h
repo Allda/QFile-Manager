@@ -1,4 +1,4 @@
-#ifndef DISKPARTITION_H
+    #ifndef DISKPARTITION_H
 #define DISKPARTITION_H
 
 #include <QObject>
@@ -10,7 +10,8 @@ class DiskPartition : public QObject
     Q_PROPERTY (QStringList diskList READ getDiskList NOTIFY diskListChanged)
 public:
     explicit DiskPartition(QObject *parent = 0);
-    QStringList getDiskList () const { return m_diskList; }
+    Q_INVOKABLE QStringList getDiskList () const { return m_diskList; }
+    Q_INVOKABLE int getListLength() { return m_diskList.length();}
 signals:
     void diskListChanged();
 
