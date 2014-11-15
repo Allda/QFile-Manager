@@ -121,17 +121,20 @@ ApplicationWindow {
                     TextField {
                         id: addr1
                         placeholderText: "Address here"
-                        Layout.minimumWidth: parent.width * 0.8
-                        Layout.maximumWidth: parent.width * 0.8
+                        Layout.minimumWidth: parent.width * 0.75
+                        Layout.maximumWidth: parent.width * 0.75
+
+                        onEditingFinished: {
+                            var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                            x.changeDir(addr1.text)
+
+                        }
                     }
 
                     /* Change disk */
                     Button {
                         id: butt1
-                        text: {
-                            if (diskP1.getListLength() > 0)
-                                diskP1.getDiskList()[0]
-                        }
+                        text: "Change disk"
                         visible: true
 
                         MouseArea {
@@ -156,11 +159,6 @@ ApplicationWindow {
                                     rep1.itemAt(i).visible = true
                                 }
 
-                                /*butt2.visible = true
-                                butt3.visible = true
-                                butt4.visible = true
-                                butt5.visible = true
-                                butt6.visible = true*/
                                 /* Load layout with disk choose */
                                 stack1.push(split5)
                             }
@@ -225,16 +223,16 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 onClicked: {
-                                    console.log(diskP1.getListLength());
-                                    butt1.text = diskP1.diskList[index]
-                                    myDir1.changeDir(diskP1.diskList[index])
+                                    /* Change disk */
+                                    var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                                    x.changeDir(diskP1.diskList[index])
+                                    /* Set disk path */
                                     addr1.text = diskP1.diskList[index]
+                                    /* Return to origin state */
                                     stack1.pop(true)
                                 }
                             }
-
                         }
-
                     }
                 }
             }
@@ -249,72 +247,77 @@ ApplicationWindow {
                     title: "Tab 1"
                     Component {
                         id: tab1
-                    TableView {
+                        TableView {
+                            selectionMode: SelectionMode.ExtendedSelection
+                            sortIndicatorVisible: true
 
-                        selectionMode: SelectionMode.ExtendedSelection
-                        sortIndicatorVisible: true
+                            TableViewColumn {
+                                role: "name"
+                                title: "Name"
 
-                        TableViewColumn {
-                            role: "name"
-                            title: "Name"
+                            }
+                            TableViewColumn {
+                                role: "type"
+                                title: "Type"
+                                width: 50
+                            }
+                            TableViewColumn {
+                                role: "size"
+                                title: "Size"
+                                width: 100
+                            }
 
-                        }
-                        TableViewColumn {
-                            role: "type"
-                            title: "Type"
-                            width: 50
-                        }
-                        TableViewColumn {
-                            role: "size"
-                            title: "Size"
-                            width: 100
-                        }
+                            Directory {
+                                 id: temp
+                            }
 
-                        property var dir: new Directory()
-
-                        model: dir.files
-                        onActivated: {
-                            dir.changeDir(dir.getDir() + "/" +model[currentRow].wholeName)
-                            addr1.text = dir.getDir()
-                        }
+                            model: {
+                                temp.files
+                            }
+                            onActivated: {
+                                temp.changeDir(temp.getDir() + "/" + model[currentRow].wholeName)
+                                addr1.text = temp.getDir()
+                            }
+                       }
                    }
-                   }
+
+                    onActiveChanged: {
+                        var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                        addr1.text = x.getDir()
+                    }
+
+                    onActiveFocusChanged: {
+                        var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                        addr1.text = x.getDir()
+                    }
+
                }
+
                /* Tab plus */
                Tab {
                   title: "+"
-                  MouseArea {
-                      anchors.fill: parent
-                      onClicked: {
-                          tview1.insertTab(tview1.count-1, "Tab" + (tview1.count-1), tab1)
+
+                  onActiveChanged: {
+                      tview1.insertTab(tview1.count-1, "Tab " + tview1.count, tab1)
+                      tview1.currentIndex = tview1.count-2
+
+                      var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                      addr1.text = x.getDir()
+                  }
+
+                  onVisibleChanged: {
+                      if (tview1.currentIndex == (tview1.count-1)) {
+                          tview1.insertTab(tview1.count-1, "Tab " + tview1.count, tab1)
+                          tview1.currentIndex = tview1.count-2
+
+                          var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                          addr1.text = x.getDir()
                       }
                   }
+
                }
-          }
+           }
     }
-
-
-        TabView{
-                id:tb
-                Component{
-                        id:viewComp
-                        Rectangle{
-                                anchors.fill:parent
-                                color:"black"
-                        }
-                }
-                function loadTab(){
-                    var c_tab=currentIndex
-                    var t=tb.addTab("x",viewComp)
-                    currentIndex=count-1
-                    currentIndex=c_tab
-                   }
-                MouseArea{
-                        anchors.fill:parent
-                        onClicked:tb.loadTab()
-                        }
-        }
-
 
         /* Right window ... will be duplicate of left window */
         SplitView {
