@@ -128,7 +128,10 @@ ApplicationWindow {
                     /* Change disk */
                     Button {
                         id: butt1
-                        text: "Disk C:"
+                        text: {
+                            if (diskP1.getListLength() > 0)
+                                diskP1.getDiskList()[0]
+                        }
                         visible: true
 
                         MouseArea {
@@ -140,20 +143,24 @@ ApplicationWindow {
                                     if (xAnim2.running == false)
                                         if (stack1.x == 0) {
                                             xAnim1.start()
-
-                                            console.log("Anim1 start")
+                                            //console.log("Anim1 start")
                                         }
                                         else {
                                             xAnim2.start()
-                                            console.log("Anim2 start")
+                                            //console.log("Anim2 start")
                                         }
 
                                 /* Set items visibility for layout 2 */
-                                butt2.visible = true
+
+                                for (var i = 0; i < diskP1.getListLength(); i++) {
+                                    rep1.itemAt(i).visible = true
+                                }
+
+                                /*butt2.visible = true
                                 butt3.visible = true
                                 butt4.visible = true
                                 butt5.visible = true
-                                butt6.visible = true
+                                butt6.visible = true*/
                                 /* Load layout with disk choose */
                                 stack1.push(split5)
                             }
@@ -170,6 +177,7 @@ ApplicationWindow {
                             to: -(stack1.width * 0.8);
                             duration: 2000;
                             easing.type: Easing.OutQuint
+
 
                         }
                     }
@@ -191,102 +199,40 @@ ApplicationWindow {
                 SplitView {
                     id: split5
 
-                    /* First disk */
-                    Button {
-                        id: butt2
-                        text: "Disk C:"
-                        visible: false
-                        Layout.maximumWidth: parent.width * 0.2
-                        Layout.minimumWidth: parent.width * 0.2
+                    Repeater {
+                        id: rep1
 
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                butt1.text = "Disk C:"
-                                myDir1.changeDir("C:")
-                                addr1.text = "C://"
-                                stack1.pop(true)
+                        model: diskP1.getListLength()
+
+                        Button {
+                            text: diskP1.diskList[index]
+                            visible: false
+
+                            Layout.maximumWidth: {
+                                if ((split5.width / diskP1.getListLength()) > 50)
+                                    split5.width / diskP1.getListLength()
+                                else
+                                    50
                             }
-                        }
-
-                    }
-
-                    /* Second disk */
-                    Button {
-                        id: butt3
-                        text: "Disk D:"
-                        visible: false
-                        Layout.maximumWidth: parent.width * 0.2
-                        Layout.minimumWidth: parent.width * 0.2
-                        //anchors.left: addr1.right
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                butt1.text = "Disk D:"
-                                myDir1.changeDir("D:")
-                                addr1.text = "D://"
-                                stack1.pop(true)
+                            Layout.minimumWidth: {
+                                if ((split5.width / diskP1.getListLength()) > 50)
+                                    split5.width / diskP1.getListLength()
+                                else
+                                    50
                             }
-                        }
 
-                    }
-
-                    /* Third disk */
-                    Button {
-                        id: butt4
-                        text: "Disk E:"
-                        visible: false
-                        Layout.maximumWidth: parent.width * 0.2
-                        Layout.minimumWidth: parent.width * 0.2
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                butt1.text = "Disk E:"
-                                myDir1.changeDir("E:")
-                                addr1.text = "E://"
-                                stack1.pop(true)
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    console.log(diskP1.getListLength());
+                                    butt1.text = diskP1.diskList[index]
+                                    myDir1.changeDir(diskP1.diskList[index])
+                                    addr1.text = diskP1.diskList[index]
+                                    stack1.pop(true)
+                                }
                             }
-                        }
 
-                    }
-
-                    /* Next disk */
-                    Button {
-                        id: butt5
-                        text: "Next"
-                        Layout.maximumWidth: parent.width * 0.2
-                        Layout.minimumWidth: parent.width * 0.2
-                        visible: false
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                stack1.pop(true)
-                            }
-                        }
-
-                    }
-
-                    /* Previous disk */
-                    Button {
-                        id: butt6
-                        text: "Back"
-                        Layout.maximumWidth: parent.width * 0.2
-                        Layout.minimumWidth: parent.width * 0.2
-                        visible: false
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                stack1.pop(true)
-                            }
                         }
 
                     }
@@ -298,9 +244,13 @@ ApplicationWindow {
             /* Table of views (2 tabs) */
             TabView {
                 /* First tab */
+                id: tview1
                 Tab {
                     title: "Tab 1"
+                    Component {
+                        id: tab1
                     TableView {
+
                         selectionMode: SelectionMode.ExtendedSelection
                         sortIndicatorVisible: true
 
@@ -320,102 +270,51 @@ ApplicationWindow {
                             width: 100
                         }
 
-                        model:myDir1.files
+                        property var dir: new Directory()
+
+                        model: dir.files
                         onActivated: {
-                            myDir1.changeDir(myDir1.getDir() + "/" +model[currentRow].wholeName)
-                            addr1.text = myDir1.getDir()
+                            dir.changeDir(dir.getDir() + "/" +model[currentRow].wholeName)
+                            addr1.text = dir.getDir()
                         }
-
-                    /*style: TableViewStyle {
-                        id: tableStyle
-                        headerDelegate: Rectangle{
-                            height: textItem.implicitHeight * 1.2
-                            width: textItem.implicitWidth
-                            color: "#787878"
-                            Text {
-                                id: textItem
-                                anchors.fill: parent
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: styleData.textAlignment
-                                anchors.leftMargin: 12
-                                text: styleData.value
-                                elide: Text.ElideRight
-                                color: "#FFFFFF"
-                                renderType: Text.NativeRendering
-                            }
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.top: parent.top
-                                anchors.bottom: parent.bottom
-                                anchors.bottomMargin: 1
-                                anchors.topMargin: 1
-                                width: 1
-                                color: "#ccc"
-                            }
-                        }
-
-                        rowDelegate: Rectangle{
-                            height: textItem.implicitHeight * 1.2
-                            width: textItem.implicitWidth
-                            color: "#787878"
-                            Text {
-                                id: textItem2
-                                anchors.fill: parent
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: styleData.textAlignment
-                                anchors.leftMargin: 12
-                                text: styleData.value
-                                elide: Text.ElideRight
-                                color: "#FFFFFF"
-                                renderType: Text.NativeRendering
-                            }
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.top: parent.top
-                                anchors.bottom: parent.bottom
-                                anchors.bottomMargin: 1
-                                anchors.topMargin: 1
-                                width: 1
-                                color: "#ccc"
-                            }
-                        }
-                    }*/
-
-
-
-                }
-            }
-
-            /* Second tab */
-            Tab {
-                title: "Tab 2"
-                TableView {
-
-                    TableViewColumn {
-                        role: "name"
-                        title: "Name"
-
-                    }
-                    TableViewColumn {
-                        role: "type"
-                        title: "Type"
-                        width: 50
-                    }
-                    /*TableViewColumn {
-                        role: "size"
-                        title: "Size"
-                        width: 100
-                    }*/
-
-                    model:myDir2.files
-                    onActivated: {
-                        myDir2.changeDir(myDir2.getDir() + "/" +model[currentRow].wholeName)
-                        addr1.text = myDir1.getDir() + "/" +model[currentRow].wholeName
-                    }
-                }
-            }
-        }
+                   }
+                   }
+               }
+               /* Tab plus */
+               Tab {
+                  title: "+"
+                  MouseArea {
+                      anchors.fill: parent
+                      onClicked: {
+                          tview1.insertTab(tview1.count-1, "Tab" + (tview1.count-1), tab1)
+                      }
+                  }
+               }
+          }
     }
+
+
+        TabView{
+                id:tb
+                Component{
+                        id:viewComp
+                        Rectangle{
+                                anchors.fill:parent
+                                color:"black"
+                        }
+                }
+                function loadTab(){
+                    var c_tab=currentIndex
+                    var t=tb.addTab("x",viewComp)
+                    currentIndex=count-1
+                    currentIndex=c_tab
+                   }
+                MouseArea{
+                        anchors.fill:parent
+                        onClicked:tb.loadTab()
+                        }
+        }
+
 
         /* Right window ... will be duplicate of left window */
         SplitView {
