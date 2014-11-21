@@ -15,6 +15,10 @@ public:
     void loadFiles();
     Q_INVOKABLE void changeDir(QString newDir);
     Q_INVOKABLE QString getDir();
+    Q_INVOKABLE void copyToDir(QString file);
+    Q_INVOKABLE void moveToDir(QString file);
+    Q_INVOKABLE void cdUp();
+    Q_INVOKABLE void deleteFile(QString file);
     /*void addToSelected(QString item);
     void printFiles();
     Q_INVOKABLE QString test2();

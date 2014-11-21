@@ -29,6 +29,9 @@ void Directory::loadFiles(){
 void Directory::changeDir(QString newDir){
     QFileInfo fi(newDir);
     if(fi.isDir()){
+        QDir myDir(newDir);
+        if(myDir.entryList().length() == 0)
+            return;
         this->dir = fi.absoluteFilePath();
         loadFiles();
     }
@@ -40,6 +43,42 @@ void Directory::changeDir(QString newDir){
 
 QString Directory::getDir(){
     return dir;
+}
+
+void Directory::copyToDir(QString file){
+    QFileInfo f(file);
+    if(f.isFile()){
+        QFile::copy(file, this->dir + '/' + f.baseName());
+    }
+    else{
+
+    }
+    loadFiles();
+}
+
+void Directory::moveToDir(QString file){
+    QFileInfo f(file);
+    QDir d;
+    if(f.isFile()){
+        d.rename(file, this->dir + '/' + f.baseName());
+        qDebug() << "PASTE";
+    }
+    else{
+
+    }
+    loadFiles();
+}
+
+void Directory::cdUp(){
+    QDir d(this->dir);
+    d.cdUp();
+    this->changeDir(d.absolutePath());
+    this->loadFiles();
+}
+
+void Directory::deleteFile(QString file){
+    QFile::remove(this->dir + "/" + file);
+    loadFiles();
 }
 
 /*void Directory::addToSelected(QString item){

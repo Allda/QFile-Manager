@@ -14,8 +14,10 @@ ApplicationWindow {
     minimumHeight: 480
     title: "File Manager"
 
-    /* */
 
+    /* */
+    property variant clipboard: []
+    property bool cutFlag: false
     menuBar: MenuBar {
         Menu {
             title: "File"
@@ -38,7 +40,8 @@ ApplicationWindow {
                 iconSource: "icons/save.png"
             }
 
-            MenuSeparator { }
+            MenuSeparator {
+            }
 
             MenuItem {
                 text: "Exit"
@@ -63,8 +66,8 @@ ApplicationWindow {
         }
     }
 
-    /*  */
 
+    /*  */
     toolBar: ToolBar {
         id: tool
         RowLayout {
@@ -89,8 +92,8 @@ ApplicationWindow {
         }
     }
 
-    /* Main window */
 
+    /* Main window */
     SplitView {
         id: split
         anchors.fill: parent
@@ -125,9 +128,9 @@ ApplicationWindow {
                         Layout.maximumWidth: parent.width * 0.75
 
                         onEditingFinished: {
-                            var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                            var x = tview1.getTab(
+                                        tview1.currentIndex).children[0].data[3]
                             x.changeDir(addr1.text)
-
                         }
                     }
 
@@ -147,15 +150,15 @@ ApplicationWindow {
                                         if (stack1.x == 0) {
                                             xAnim1.start()
                                             //console.log("Anim1 start")
-                                        }
-                                        else {
+                                        } else {
                                             xAnim2.start()
                                             //console.log("Anim2 start")
                                         }
 
-                                /* Set items visibility for layout 2 */
 
-                                for (var i = 0; i < diskP1.getListLength(); i++) {
+                                /* Set items visibility for layout 2 */
+                                for (var i = 0; i < diskP1.getListLength(
+                                         ); i++) {
                                     rep1.itemAt(i).visible = true
                                 }
 
@@ -171,12 +174,10 @@ ApplicationWindow {
                         running: false
                         alwaysRunToEnd: true
                         NumberAnimation {
-                            from: stack1.x;
-                            to: -(stack1.width * 0.8);
-                            duration: 2000;
+                            from: stack1.x
+                            to: -(stack1.width * 0.8)
+                            duration: 2000
                             easing.type: Easing.OutQuint
-
-
                         }
                     }
 
@@ -185,9 +186,9 @@ ApplicationWindow {
                         running: false
                         alwaysRunToEnd: true
                         NumberAnimation {
-                            from: stack1.x;
-                            to: 0;
-                            duration: 2000;
+                            from: stack1.x
+                            to: 0
+                            duration: 2000
                             easing.type: Easing.OutQuint
                         }
                     }
@@ -207,13 +208,15 @@ ApplicationWindow {
                             visible: false
 
                             Layout.maximumWidth: {
-                                if ((split5.width / diskP1.getListLength()) > 50)
+                                if ((split5.width / diskP1.getListLength(
+                                         )) > 50)
                                     split5.width / diskP1.getListLength()
                                 else
                                     50
                             }
                             Layout.minimumWidth: {
-                                if ((split5.width / diskP1.getListLength()) > 50)
+                                if ((split5.width / diskP1.getListLength(
+                                         )) > 50)
                                     split5.width / diskP1.getListLength()
                                 else
                                     50
@@ -224,7 +227,8 @@ ApplicationWindow {
                                 hoverEnabled: true
                                 onClicked: {
                                     /* Change disk */
-                                    var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                                    var x = tview1.getTab(
+                                                tview1.currentIndex).children[0].data[3]
                                     x.changeDir(diskP1.diskList[index])
                                     /* Set disk path */
                                     addr1.text = diskP1.diskList[index]
@@ -237,12 +241,11 @@ ApplicationWindow {
                 }
             }
 
-
-
             /* Table of views (2 tabs) */
             TabView {
                 /* First tab */
                 id: tview1
+                //var clipboard = []
                 Tab {
                     title: "Tab 1"
                     Component {
@@ -254,7 +257,6 @@ ApplicationWindow {
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
-
                             }
                             TableViewColumn {
                                 role: "type"
@@ -267,57 +269,140 @@ ApplicationWindow {
                                 width: 100
                             }
 
+                            Keys.onPressed: {
+                                if (event.modifiers & Qt.ControlModifier) {
+                                    // CTRL + ->
+                                    if (event.key === Qt.Key_Right) {
+                                        var x = tview1.getTab(
+                                                    tview1.currentIndex).children[0]
+                                        console.log('Copy')
+                                        /*console.log(x.model[currentRow].wholeName)
+                                                                                x.selection.forEach( function(rowIndex) {console.log(x.model[rowIndex].wholeName)} )*/
+                                        event.accepted = true
+                                    }
+                                    //CTRL + C
+                                    if (event.key === Qt.Key_C || event.key === Qt.Key_X) {
+                                        var x = tview1.getTab(
+                                                    tview1.currentIndex).children[0]
+                                        console.log('Copy to clipboard')
+                                        //clipboard = []
+                                        var clip = new Array()
+                                        x.selection.forEach(
+                                                    function (rowIndex) {
+                                                        console.log(x.model[rowIndex].wholeName)
+                                                        //clipboard = clipboard + x.model[rowIndex].wholeName
+                                                        clip.push(x.data[3].getDir() + '/' + x.model[rowIndex].wholeName)
+                                                    })
+                                        clipboard = clip
+                                        label.text = clip.length + " files in clipboard"
+                                        if(event.key === Qt.Key_X)
+                                            cutFlag = true
+                                        else
+                                            cutFlag = false
+
+
+
+                                        event.accepted = true
+                                    }
+                                    if (event.key === Qt.Key_V) {
+                                        console.log(cutFlag)
+                                        var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                                        for(var i = 0; i < clipboard.length; i++){
+                                            if(cutFlag)
+                                                x.moveToDir(clipboard[i])
+                                            else
+                                                x.copyToDir(clipboard[i])
+                                            label.text = "Copy: " + clipboard[i]
+                                        }
+                                        label.text = "Done"
+                                        console.log("Done")
+                                    }
+                                }
+                                if (event.modifiers & Qt.AltModifier) {
+                                    // ALT + ->
+                                    if (event.key === Qt.Key_Right) {
+                                        var x = tview1.getTab(
+                                                    tview1.currentIndex).children[0]
+                                        console.log('Cut')
+                                        /*x.selection.forEach( function(rowIndex) {console.log(x.model[rowIndex].wholeName)} )*/
+                                        event.accepted = true
+                                    } else if (event.key === Qt.Key_Backtab) {
+                                        console.log('backward')
+                                        event.accepted = true
+                                    }
+                                }
+                                if (event.key == Qt.Key_Backspace) {
+                                    var x = tview1.getTab(
+                                                tview1.currentIndex).children[0].data[3]
+                                    x.cdUp()
+                                }
+                                if(event.key === Qt.Key_Delete){
+                                    var x = tview1.getTab(
+                                                tview1.currentIndex).children[0]
+                                    x.selection.forEach(
+                                                function (rowIndex) {
+                                                    x.data[3].deleteFile(x.model[rowIndex].wholeName)
+                                                })
+                                }
+                            }
+
                             Directory {
-                                 id: temp
+                                id: temp
                             }
 
                             model: {
                                 temp.files
                             }
                             onActivated: {
-                                temp.changeDir(temp.getDir() + "/" + model[currentRow].wholeName)
+                                temp.changeDir(
+                                            temp.getDir(
+                                                ) + "/" + model[currentRow].wholeName)
                                 addr1.text = temp.getDir()
                             }
-                       }
-                   }
+                        }
+                    }
 
                     onActiveChanged: {
-                        var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                        var x = tview1.getTab(
+                                    tview1.currentIndex).children[0].data[3]
                         addr1.text = x.getDir()
                     }
 
                     onActiveFocusChanged: {
-                        var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
+                        var x = tview1.getTab(
+                                    tview1.currentIndex).children[0].data[3]
+                        addr1.text = x.getDir()
+                    }
+                }
+
+                /* Tab plus */
+                Tab {
+                    title: "+"
+
+                    onActiveChanged: {
+                        tview1.insertTab(tview1.count - 1,
+                                         "Tab " + tview1.count, tab1)
+                        tview1.currentIndex = tview1.count - 2
+
+                        var x = tview1.getTab(
+                                    tview1.currentIndex).children[0].data[3]
                         addr1.text = x.getDir()
                     }
 
-               }
+                    onVisibleChanged: {
+                        if (tview1.currentIndex == (tview1.count - 1)) {
+                            tview1.insertTab(tview1.count - 1,
+                                             "Tab " + tview1.count, tab1)
+                            tview1.currentIndex = tview1.count - 2
 
-               /* Tab plus */
-               Tab {
-                  title: "+"
-
-                  onActiveChanged: {
-                      tview1.insertTab(tview1.count-1, "Tab " + tview1.count, tab1)
-                      tview1.currentIndex = tview1.count-2
-
-                      var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
-                      addr1.text = x.getDir()
-                  }
-
-                  onVisibleChanged: {
-                      if (tview1.currentIndex == (tview1.count-1)) {
-                          tview1.insertTab(tview1.count-1, "Tab " + tview1.count, tab1)
-                          tview1.currentIndex = tview1.count-2
-
-                          var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
-                          addr1.text = x.getDir()
-                      }
-                  }
-
-               }
-           }
-    }
+                            var x = tview1.getTab(
+                                        tview1.currentIndex).children[0].data[3]
+                            addr1.text = x.getDir()
+                        }
+                    }
+                }
+            }
+        }
 
         /* Right window ... will be duplicate of left window */
         SplitView {
@@ -333,7 +418,11 @@ ApplicationWindow {
 
             ListModel {
                 id: listmodel2
-                ListElement { Name: "ITU-project"; Type: "exe"; Size: "4224 Bytes" }
+                ListElement {
+                    Name: "ITU-project"
+                    Type: "exe"
+                    Size: "4224 Bytes"
+                }
             }
 
             TableView {
@@ -352,14 +441,14 @@ ApplicationWindow {
                     width: 100
                 }
 
-                model:listmodel2
-                onActivated: console.log(diskP1.diskList[0])
+                model: listmodel2
+                //onActivated: console.log(diskP1.diskList[0])
             }
         }
     }
 
-    /* */
 
+    /* */
     statusBar: StatusBar {
         RowLayout {
             width: parent.width
@@ -370,27 +459,21 @@ ApplicationWindow {
                 elide: Text.ElideMiddle
             }
             ProgressBar {
-
             }
         }
     }
 
-    Directory{
+    Directory {
         id: myDir1
     }
-    Directory{
+    Directory {
         id: myDir2
     }
-    Directory{
+    Directory {
         id: myDir3
     }
 
-    DiskPartition{
+    DiskPartition {
         id: diskP1
     }
-
-
-
 }
-
-

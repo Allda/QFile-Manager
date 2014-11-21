@@ -20,12 +20,15 @@ File::File(QString name, QString dir, QObject *parrent){
     else{
         this->m_name = fi.baseName();
         if(fi.completeSuffix() != "")
-            this->m_type = "."+fi.completeSuffix();
+            this->m_type = fi.suffix();
         if (this->isFile)
             this->m_size = converSize(fi.size());
         else{
             QDir myDir(dir + "/" + name);
-            this->m_size = QString::number(myDir.entryList().length() - 2) + " items";
+            if(myDir.entryList().length() == 0)
+                this->m_size = "0 items";
+            else
+                this->m_size = QString::number(myDir.entryList().length() - 2) + " items";
 
         }
     }
