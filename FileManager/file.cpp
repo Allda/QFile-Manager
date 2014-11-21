@@ -19,8 +19,10 @@ File::File(QString name, QString dir, QObject *parrent){
     }
     else{
         this->m_name = fi.baseName();
-        if(fi.completeSuffix() != "")
+        if(this->isFile)
             this->m_type = fi.suffix();
+        else
+            this->m_name = name;
         if (this->isFile)
             this->m_size = converSize(fi.size());
         else{
