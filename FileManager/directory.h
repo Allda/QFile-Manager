@@ -18,7 +18,9 @@ public:
     Q_INVOKABLE void copyToDir(QString file);
     Q_INVOKABLE void moveToDir(QString file);
     Q_INVOKABLE void cdUp();
-    Q_INVOKABLE void deleteFile(QString file);
+    Q_INVOKABLE void deleteFile(QString file, bool emitFlag);
+    void copyPath(QString src, QString dst);
+    bool removeDir(const QString & dirName);
     /*void addToSelected(QString item);
     void printFiles();
     Q_INVOKABLE QString test2();

@@ -5,6 +5,7 @@ import directory 1.0
 import diskpartition 1.0
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
+import QtQuick.Dialogs 1.1
 
 ApplicationWindow {
     visible: true
@@ -14,10 +15,141 @@ ApplicationWindow {
     minimumHeight: 480
     title: "File Manager"
 
-
     /* */
     property variant clipboard: []
     property bool cutFlag: false
+
+    Menu {
+        title: "Edit"
+        id: contextMenu
+
+        MenuItem {
+            text: "Cut"
+            shortcut: "Ctrl+X"
+            onTriggered: cut()
+        }
+
+        MenuItem {
+            text: "Copy"
+            shortcut: "Ctrl+C"
+            onTriggered: {
+                copy()
+            }
+        }
+
+        MenuItem {
+            text: "Paste"
+            shortcut: "Ctrl+V"
+            onTriggered: paste()
+        }
+
+        MenuItem {
+            text: "Delete"
+            //shortcut: "Ctrl+C"
+            onTriggered: {
+                showDeleteDialog()
+            }
+        }
+
+        MenuSeparator {
+        }
+
+        Menu {
+            title: "More Stuff"
+
+            MenuItem {
+                text: "Do Nothing"
+            }
+        }
+    }
+
+    function copy() {
+        cutFlag = false
+        var x = getActivTab()
+        addToClipboard(x)
+    }
+
+    function cut() {
+        cutFlag = true
+        var x = getActivTab()
+        addToClipboard(x)
+    }
+
+    function paste() {
+        var x = getActivTab().data[3]
+        for (var i = 0; i < clipboard.length; i++) {
+            if (cutFlag)
+                x.moveToDir(clipboard[i])
+            else
+                x.copyToDir(clipboard[i])
+            label.text = "Copy: " + clipboard[i]
+        }
+        label.text = "Done"
+    }
+
+    function addToClipboard(tab) {
+        var clip = new Array()
+        tab.selection.forEach(function (rowIndex) {
+            console.log(tab.model[rowIndex].wholeName)
+            //clipboard = clipboard + x.model[rowIndex].wholeName
+            clip.push(tab.data[3].getDir(
+                          ) + '/' + tab.model[rowIndex].wholeName)
+        })
+        clipboard = clip
+        console.log(clipboard)
+    }
+
+    function showDeleteDialog() {
+        removeDialog.visible = true
+        removeDialog.open()
+    }
+
+    function del() {
+        var x = getActivTab()
+        var len = getSelectionCount()
+        var j = 1
+        x.selection.forEach(function (rowIndex) {
+            if (j == len)
+                x.data[3].deleteFile(x.model[rowIndex].wholeName, true)
+            else
+                x.data[3].deleteFile(x.model[rowIndex].wholeName, false)
+            j++
+        })
+    }
+
+    function getActivTab() {
+        if (tview1.focus) {
+            var x = tview1.getTab(tview1.currentIndex).children[0]
+        }
+        /*else
+                    var x = tview2.getTab(tview2.currentIndex).children[0]*/
+        return x
+    }
+
+    function getSelectionCount() {
+        var tab = getActivTab()
+        return tab.selection.count
+    }
+
+    function cdUp(){
+        var x = getActivTab().data[3]
+        x.cdUp()
+    }
+
+    MessageDialog {
+        id: removeDialog
+
+        title: "Delete files"
+        text: "Do you realy want to remove these files."
+        standardButtons: StandardButton.Yes | StandardButton.No
+        onYes: {
+            del()
+        }
+        onNo: {
+
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: "File"
@@ -39,6 +171,7 @@ ApplicationWindow {
                 shortcut: "Ctrl+S"
                 iconSource: "icons/save.png"
             }
+
 
             MenuSeparator {
             }
@@ -66,7 +199,6 @@ ApplicationWindow {
         }
     }
 
-
     /*  */
     toolBar: ToolBar {
         id: tool
@@ -85,13 +217,18 @@ ApplicationWindow {
                 iconSource: "icons/save.png"
             }
 
+            ToolButton {
+                text: "Up"
+                iconSource: "icons/open.png"
+                onClicked: cdUp()
+            }
+
             TextField {
                 Layout.fillWidth: true
                 anchors.right: parent.right
             }
         }
     }
-
 
     /* Main window */
     SplitView {
@@ -154,7 +291,6 @@ ApplicationWindow {
                                             xAnim2.start()
                                             //console.log("Anim2 start")
                                         }
-
 
                                 /* Set items visibility for layout 2 */
                                 for (var i = 0; i < diskP1.getListLength(
@@ -257,16 +393,18 @@ ApplicationWindow {
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
+                                width: parent.width/2
                             }
                             TableViewColumn {
                                 role: "type"
                                 title: "Type"
-                                width: 50
+                                width: parent.width/4
                             }
                             TableViewColumn {
                                 role: "size"
                                 title: "Size"
-                                width: 100
+                                width: parent.width/4
+
                             }
 
                             Keys.onPressed: {
@@ -276,46 +414,8 @@ ApplicationWindow {
                                         var x = tview1.getTab(
                                                     tview1.currentIndex).children[0]
                                         console.log('Copy')
-                                        /*console.log(x.model[currentRow].wholeName)
-                                                                                x.selection.forEach( function(rowIndex) {console.log(x.model[rowIndex].wholeName)} )*/
-                                        event.accepted = true
-                                    }
-                                    //CTRL + C
-                                    if (event.key === Qt.Key_C || event.key === Qt.Key_X) {
-                                        var x = tview1.getTab(
-                                                    tview1.currentIndex).children[0]
-                                        console.log('Copy to clipboard')
-                                        //clipboard = []
-                                        var clip = new Array()
-                                        x.selection.forEach(
-                                                    function (rowIndex) {
-                                                        console.log(x.model[rowIndex].wholeName)
-                                                        //clipboard = clipboard + x.model[rowIndex].wholeName
-                                                        clip.push(x.data[3].getDir() + '/' + x.model[rowIndex].wholeName)
-                                                    })
-                                        clipboard = clip
-                                        label.text = clip.length + " files in clipboard"
-                                        if(event.key === Qt.Key_X)
-                                            cutFlag = true
-                                        else
-                                            cutFlag = false
-
-
 
                                         event.accepted = true
-                                    }
-                                    if (event.key === Qt.Key_V) {
-                                        console.log(cutFlag)
-                                        var x = tview1.getTab(tview1.currentIndex).children[0].data[3]
-                                        for(var i = 0; i < clipboard.length; i++){
-                                            if(cutFlag)
-                                                x.moveToDir(clipboard[i])
-                                            else
-                                                x.copyToDir(clipboard[i])
-                                            label.text = "Copy: " + clipboard[i]
-                                        }
-                                        label.text = "Done"
-                                        console.log("Done")
                                     }
                                 }
                                 if (event.modifiers & Qt.AltModifier) {
@@ -324,25 +424,15 @@ ApplicationWindow {
                                         var x = tview1.getTab(
                                                     tview1.currentIndex).children[0]
                                         console.log('Cut')
-                                        /*x.selection.forEach( function(rowIndex) {console.log(x.model[rowIndex].wholeName)} )*/
-                                        event.accepted = true
-                                    } else if (event.key === Qt.Key_Backtab) {
-                                        console.log('backward')
+
                                         event.accepted = true
                                     }
                                 }
                                 if (event.key == Qt.Key_Backspace) {
-                                    var x = tview1.getTab(
-                                                tview1.currentIndex).children[0].data[3]
-                                    x.cdUp()
+                                    cdUp()
                                 }
-                                if(event.key === Qt.Key_Delete){
-                                    var x = tview1.getTab(
-                                                tview1.currentIndex).children[0]
-                                    x.selection.forEach(
-                                                function (rowIndex) {
-                                                    x.data[3].deleteFile(x.model[rowIndex].wholeName)
-                                                })
+                                if (event.key === Qt.Key_Delete) {
+                                    showDeleteDialog()
                                 }
                             }
 
@@ -358,6 +448,18 @@ ApplicationWindow {
                                             temp.getDir(
                                                 ) + "/" + model[currentRow].wholeName)
                                 addr1.text = temp.getDir()
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                acceptedButtons: Qt.RightButton
+                                onClicked: {
+                                    if (mouse.button == Qt.LeftButton) {
+                                        console.log("Left")
+                                    } else if (mouse.button == Qt.RightButton) {
+                                        contextMenu.popup()
+                                    }
+                                }
                             }
                         }
                     }
@@ -446,7 +548,6 @@ ApplicationWindow {
             }
         }
     }
-
 
     /* */
     statusBar: StatusBar {

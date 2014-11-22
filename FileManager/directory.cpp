@@ -51,9 +51,27 @@ void Directory::copyToDir(QString file){
         QFile::copy(file, this->dir + '/' + f.baseName());
     }
     else{
-
+        QDir(this->dir).mkdir(f.baseName());
+        this->copyPath(file, this->dir+'/'+f.baseName());
     }
     loadFiles();
+}
+
+void Directory::copyPath(QString src, QString dst)
+{
+    QDir dir(src);
+    if (! dir.exists())
+        return;
+
+    foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        QString dst_path = dst + QDir::separator() + d;
+        dir.mkpath(dst_path);
+        copyPath(src+ QDir::separator() + d, dst_path);
+    }
+
+    foreach (QString f, dir.entryList(QDir::Files)) {
+        QFile::copy(src + QDir::separator() + f, dst + QDir::separator() + f);
+    }
 }
 
 void Directory::moveToDir(QString file){
@@ -61,7 +79,6 @@ void Directory::moveToDir(QString file){
     QDir d;
     if(f.isFile()){
         d.rename(file, this->dir + '/' + f.baseName());
-        qDebug() << "PASTE";
     }
     else{
 
@@ -76,9 +93,40 @@ void Directory::cdUp(){
     this->loadFiles();
 }
 
-void Directory::deleteFile(QString file){
-    QFile::remove(this->dir + "/" + file);
-    loadFiles();
+void Directory::deleteFile(QString file, bool emitFlag){
+    QFileInfo f(this->dir + "/" + file);
+    qDebug() << file;
+    if(f.isFile()){
+        QFile::remove(this->dir + "/" + file);
+    }
+    else{
+        removeDir(this->dir + "/" + file);
+    }
+    if(emitFlag)
+        loadFiles();
+}
+
+bool Directory::removeDir(const QString & dirName)
+{
+    bool result = true;
+    QDir dir(dirName);
+
+    if (dir.exists(dirName)) {
+        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
+            if (info.isDir()) {
+                result = removeDir(info.absoluteFilePath());
+            }
+            else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = dir.rmdir(dirName);
+    }
+    return result;
 }
 
 /*void Directory::addToSelected(QString item){
