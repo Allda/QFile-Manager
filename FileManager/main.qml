@@ -77,12 +77,15 @@ ApplicationWindow {
 
     function paste() {
         var x = getActivTab().data[3]
+        progresBar.value = 0
+        progresBar.maximumValue = clipboard.length
         for (var i = 0; i < clipboard.length; i++) {
             if (cutFlag)
                 x.moveToDir(clipboard[i])
             else
                 x.copyToDir(clipboard[i])
             label.text = "Copy: " + clipboard[i]
+            progresBar.value = i+1
         }
         label.text = "Done"
     }
@@ -107,13 +110,16 @@ ApplicationWindow {
     function del() {
         var x = getActivTab()
         var len = getSelectionCount()
+        ProgressBar.maximumValue = len
         var j = 1
         x.selection.forEach(function (rowIndex) {
             if (j == len)
                 x.data[3].deleteFile(x.model[rowIndex].wholeName, true)
             else
                 x.data[3].deleteFile(x.model[rowIndex].wholeName, false)
+
             j++
+            ProgressBar.value = j
         })
     }
 
@@ -560,6 +566,7 @@ ApplicationWindow {
                 elide: Text.ElideMiddle
             }
             ProgressBar {
+                id: progresBar
             }
         }
     }

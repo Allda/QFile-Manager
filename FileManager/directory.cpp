@@ -81,7 +81,8 @@ void Directory::moveToDir(QString file){
         d.rename(file, this->dir + '/' + f.baseName());
     }
     else{
-
+        copyPath(file, this->dir + "/" + f.baseName());
+        removeDir(file);
     }
     loadFiles();
 }
