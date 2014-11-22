@@ -94,9 +94,22 @@ void Directory::cdUp(){
     this->loadFiles();
 }
 
+void Directory::newFolder(QString name){
+    if(!QDir(this->dir + '/' + name).exists())
+        QDir().mkdir(this->dir + '/' + name);
+    loadFiles();
+}
+
+void Directory::newFile(QString name){
+    if(!QFile(this->dir + '/' + name).exists()){
+        QFile f(this->dir + '/' + name);
+        f.open(QIODevice::WriteOnly);
+        loadFiles();
+    }
+}
+
 void Directory::deleteFile(QString file, bool emitFlag){
     QFileInfo f(this->dir + "/" + file);
-    qDebug() << file;
     if(f.isFile()){
         QFile::remove(this->dir + "/" + file);
     }
@@ -128,6 +141,12 @@ bool Directory::removeDir(const QString & dirName)
         result = dir.rmdir(dirName);
     }
     return result;
+}
+
+void Directory::rename(QString oldName, QString newName){
+    QDir d;
+    d.rename(this->dir + '/'+oldName, this->dir + '/' + newName);
+    loadFiles();
 }
 
 /*void Directory::addToSelected(QString item){

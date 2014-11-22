@@ -6,6 +6,7 @@ import diskpartition 1.0
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import QtQuick.Dialogs 1.1
+import QtQuick.Dialogs 1.2
 
 ApplicationWindow {
     visible: true
@@ -18,18 +19,22 @@ ApplicationWindow {
     /* */
     property variant clipboard: []
     property bool cutFlag: false
+    property string lastFile: ""
+    property real progressVal: 0.0
 
     Menu {
         title: "Edit"
         id: contextMenu
 
         MenuItem {
+            id: cutOpt
             text: "Cut"
             shortcut: "Ctrl+X"
             onTriggered: cut()
         }
 
         MenuItem {
+            id: copyOpt
             text: "Copy"
             shortcut: "Ctrl+C"
             onTriggered: {
@@ -38,12 +43,14 @@ ApplicationWindow {
         }
 
         MenuItem {
+            id: pasteOpt
             text: "Paste"
             shortcut: "Ctrl+V"
             onTriggered: paste()
         }
 
         MenuItem {
+            id: deleteOpt
             text: "Delete"
             //shortcut: "Ctrl+C"
             onTriggered: {
@@ -51,14 +58,37 @@ ApplicationWindow {
             }
         }
 
+        MenuItem {
+            id: renameOpt
+            enabled: false
+            text: "Rename"
+            //shortcut: "Ctrl+C"
+            onTriggered: {
+                lastFile = getCurrentRow()
+                edtInput.text = lastFile
+                edtInput.selectAll()
+                renameDialog.visible
+                renameDialog.open()
+            }
+        }
+
         MenuSeparator {
         }
 
         Menu {
-            title: "More Stuff"
+            title: "Add.."
 
             MenuItem {
-                text: "Do Nothing"
+                id: addFolder
+                text: "New folder"
+                shortcut: "Ctrl+N"
+                onTriggered: newFolder()
+            }
+            MenuItem {
+                id: addFile
+                text: "New file"
+                shortcut: "Ctrl+Shift+N"
+                onTriggered: newFile()
             }
         }
     }
@@ -77,34 +107,41 @@ ApplicationWindow {
 
     function paste() {
         var x = getActivTab().data[3]
-        progresBar.value = 0
-        progresBar.maximumValue = clipboard.length
         for (var i = 0; i < clipboard.length; i++) {
             if (cutFlag)
                 x.moveToDir(clipboard[i])
             else
                 x.copyToDir(clipboard[i])
             label.text = "Copy: " + clipboard[i]
-            progresBar.value = i+1
+            progressVal = (i + 1) / clipboard.length
         }
         label.text = "Done"
     }
 
     function addToClipboard(tab) {
         var clip = new Array()
+        if (tab === null)
+            return
         tab.selection.forEach(function (rowIndex) {
-            console.log(tab.model[rowIndex].wholeName)
-            //clipboard = clipboard + x.model[rowIndex].wholeName
             clip.push(tab.data[3].getDir(
                           ) + '/' + tab.model[rowIndex].wholeName)
         })
         clipboard = clip
-        console.log(clipboard)
     }
 
     function showDeleteDialog() {
         removeDialog.visible = true
         removeDialog.open()
+    }
+
+    function newFolder() {
+        newFolderDialog.visible = true
+        newFolderDialog.open()
+    }
+
+    function newFile() {
+        newFileDialog.visible = true
+        newFileDialog.open()
     }
 
     function del() {
@@ -126,20 +163,32 @@ ApplicationWindow {
     function getActivTab() {
         if (tview1.focus) {
             var x = tview1.getTab(tview1.currentIndex).children[0]
-        }
-        /*else
-                    var x = tview2.getTab(tview2.currentIndex).children[0]*/
+        } /*else if(tview2.focus)
+                            var x = tview2.getTab(tview2.currentIndex).children[0]*/
+        else
+            return null
         return x
     }
 
     function getSelectionCount() {
         var tab = getActivTab()
+        if (tab === null)
+            return 0
         return tab.selection.count
     }
 
-    function cdUp(){
+    function cdUp() {
         var x = getActivTab().data[3]
         x.cdUp()
+    }
+
+    function getCurrentRow() {
+        var x = getActivTab()
+        var a = ""
+        x.selection.forEach(function (rowIndex) {
+            a = x.model[rowIndex].wholeName
+        })
+        return a
     }
 
     MessageDialog {
@@ -156,14 +205,100 @@ ApplicationWindow {
         }
     }
 
+    Dialog {
+        id: renameDialog
+        title: "Rename file"
+        height: 150
+        width: 300
+        standardButtons: StandardButton.Ok | StandardButton.Cancel
+
+        Column {
+            anchors.fill: parent
+            Text {
+                text: "New name"
+                height: 40
+            }
+            TextField {
+                id: edtInput
+                text: "Input text"
+                width: parent.width * 0.75
+                focus: true
+            }
+        }
+
+        onButtonClicked: {
+            if (clickedButton == StandardButton.Ok) {
+                getActivTab().data[3].rename(lastFile, edtInput.text)
+            }
+        }
+    }
+
+    Dialog {
+        id: newFolderDialog
+        title: "New folder"
+        height: 150
+        width: 300
+        standardButtons: StandardButton.Ok | StandardButton.Cancel
+
+        Column {
+            anchors.fill: parent
+            Text {
+                text: "Name"
+                height: 40
+            }
+            TextField {
+                id: newFolderInput
+                width: parent.width * 0.75
+                focus: true
+            }
+        }
+
+        onButtonClicked: {
+            if (clickedButton == StandardButton.Ok) {
+                getActivTab().data[3].newFolder(newFolderInput.text)
+            }
+            newFolderInput.text = ""
+        }
+    }
+
+    Dialog {
+        id: newFileDialog
+        title: "New File"
+        height: 150
+        width: 300
+        standardButtons: StandardButton.Ok | StandardButton.Cancel
+
+        Column {
+            anchors.fill: parent
+            Text {
+                text: "Name"
+                height: 40
+            }
+            TextField {
+                id: newFileInput
+                text: ""
+                width: parent.width * 0.75
+                focus: true
+            }
+        }
+
+        onButtonClicked: {
+            if (clickedButton == StandardButton.Ok) {
+                getActivTab().data[3].newFile(newFileInput.text)
+            }
+            newFileInput.text = ""
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: "File"
 
             MenuItem {
                 text: "New file"
-                shortcut: "Ctrl+N"
+                //shortcut: "Ctrl+N"
                 iconSource: "icons/new.png"
+                onTriggered: newFile()
             }
 
             MenuItem {
@@ -177,7 +312,6 @@ ApplicationWindow {
                 shortcut: "Ctrl+S"
                 iconSource: "icons/save.png"
             }
-
 
             MenuSeparator {
             }
@@ -213,6 +347,7 @@ ApplicationWindow {
             ToolButton {
                 text: "New file"
                 iconSource: "icons/new.png"
+                onClicked: newFile()
             }
             ToolButton {
                 text: "Open file"
@@ -399,18 +534,17 @@ ApplicationWindow {
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
-                                width: parent.width/2
+                                width: parent.width / 2
                             }
                             TableViewColumn {
                                 role: "type"
                                 title: "Type"
-                                width: parent.width/4
+                                width: parent.width / 4
                             }
                             TableViewColumn {
                                 role: "size"
                                 title: "Size"
-                                width: parent.width/4
-
+                                width: parent.width / 4
                             }
 
                             Keys.onPressed: {
@@ -460,9 +594,25 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.RightButton
                                 onClicked: {
-                                    if (mouse.button == Qt.LeftButton) {
-                                        console.log("Left")
-                                    } else if (mouse.button == Qt.RightButton) {
+                                    if (mouse.button == Qt.RightButton) {
+                                        console.log("Pocet: " + getSelectionCount(
+                                                        ))
+                                        if (getSelectionCount() !== 1)
+                                            renameOpt.enabled = false
+                                        else
+                                            renameOpt.enabled = true
+                                        if (getSelectionCount() < 1) {
+                                            cutOpt.enabled = false
+                                            copyOpt.enabled = false
+                                            pasteOpt.enabled = false
+                                            deleteOpt.enabled = false
+                                        } else {
+                                            cutOpt.enabled = true
+                                            copyOpt.enabled = true
+                                            pasteOpt.enabled = true
+                                            deleteOpt.enabled = true
+                                        }
+
                                         contextMenu.popup()
                                     }
                                 }
@@ -550,7 +700,6 @@ ApplicationWindow {
                 }
 
                 model: listmodel2
-                //onActivated: console.log(diskP1.diskList[0])
             }
         }
     }
@@ -567,6 +716,7 @@ ApplicationWindow {
             }
             ProgressBar {
                 id: progresBar
+                value: progressVal
             }
         }
     }
