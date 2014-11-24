@@ -23,6 +23,7 @@ ApplicationWindow {
     property real progressVal: 0.0
     property int lengthBut: 50
     property bool helpBut: false
+    property string backgroundSource: "icons/save.png"
 
     Menu {
         title: "Edit"
@@ -125,7 +126,7 @@ ApplicationWindow {
         if (tab === null)
             return
         tab.selection.forEach(function (rowIndex) {
-            clip.push(tab.data[3].getDir(
+            clip.push(tab.data[4].getDir(
                           ) + '/' + tab.model[rowIndex].wholeName)
         })
         clipboard = clip
@@ -153,9 +154,9 @@ ApplicationWindow {
         var j = 1
         x.selection.forEach(function (rowIndex) {
             if (j == len)
-                x.data[3].deleteFile(x.model[rowIndex].wholeName, true)
+                x.data[4].deleteFile(x.model[rowIndex].wholeName, true)
             else
-                x.data[3].deleteFile(x.model[rowIndex].wholeName, false)
+                x.data[4].deleteFile(x.model[rowIndex].wholeName, false)
 
             j++
             ProgressBar.value = j
@@ -180,7 +181,7 @@ ApplicationWindow {
     }
 
     function cdUp() {
-        var x = getActivTab().data[3]
+        var x = getActivTab().data[4]
         x.cdUp()
     }
 
@@ -230,7 +231,7 @@ ApplicationWindow {
 
         onButtonClicked: {
             if (clickedButton == StandardButton.Ok) {
-                getActivTab().data[3].rename(lastFile, edtInput.text)
+                getActivTab().data[4].rename(lastFile, edtInput.text)
             }
         }
     }
@@ -257,7 +258,7 @@ ApplicationWindow {
 
         onButtonClicked: {
             if (clickedButton == StandardButton.Ok) {
-                getActivTab().data[3].newFolder(newFolderInput.text)
+                getActivTab().data[4].newFolder(newFolderInput.text)
             }
             newFolderInput.text = ""
         }
@@ -286,7 +287,7 @@ ApplicationWindow {
 
         onButtonClicked: {
             if (clickedButton == StandardButton.Ok) {
-                getActivTab().data[3].newFile(newFileInput.text)
+                getActivTab().data[4].newFile(newFileInput.text)
             }
             newFileInput.text = ""
         }
@@ -408,7 +409,7 @@ ApplicationWindow {
 
                         onEditingFinished: {
                             var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[3]
+                                    tview1.currentIndex).children[0].data[4]
                                     x.changeDir(addr1.text)
                         }
                     }
@@ -514,7 +515,7 @@ ApplicationWindow {
                                 onClicked: {
                                     /* Change disk */
                                     var x = tview1.getTab(
-                                                tview1.currentIndex).children[0].data[3]
+                                                tview1.currentIndex).children[0].data[4]
                                     x.changeDir(diskP1.diskList[index])
                                     /* Set disk path */
                                     addr1.text = diskP1.diskList[index]
@@ -537,34 +538,44 @@ ApplicationWindow {
                     Component {
                         id: tab1
                         TableView {
+                            onClicked: {
+                                var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
+                                if(pattern.test(getCurrentRow())){
+                                    background.opacity = 0.3
+                                    backgroundSource = "file://" + addr1.text + "/" +  getCurrentRow()
+                                }
+                                else{
+                                    background.opacity = 0.0
+                                }
+                            }
                             selectionMode: SelectionMode.ExtendedSelection
                             sortIndicatorVisible: true
-                                    Image {
-                                        id: background
-                                        anchors.fill: parent
-                                        opacity: 0.2
-                                        anchors.topMargin: 15
-                                        anchors.rightMargin: 15
-                                        anchors.leftMargin: 15
-                                        anchors.bottomMargin: 15
+                            Image {
+                                id: background
+                                anchors.fill: parent
+                                opacity: 0.0
+                                anchors.topMargin: 25
+                                anchors.rightMargin: 0
+                                anchors.leftMargin: 0
+                                anchors.bottomMargin: 20
 
-                                        source: "icons/open.png"
-                                             }
+                                source: backgroundSource
+                            }
+                            TableViewColumn{
+                                role: "icon"
+
+                                delegate:
+                                     Image{
+                                            source: styleData.value
+                                            width: 15; height: 15
+                                            fillMode: Image.PreserveAspectFit
+                                     }
+                                width: 20
+                            }
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
-                                delegate:
-                                        Text {
-                                            text: styleData.value
-                                            x: 25
-                                            Image{
-                                                source: "icons/new.png"
-                                                width: 15; height: 15
-                                                x: -25
-                                                fillMode: Image.PreserveAspectFit
-                                            }
-                                    }
-                                width: parent.width / 2
+                                width: (parent.width / 2)-20
                             }
                             TableViewColumn {
                                 role: "type"
@@ -652,13 +663,13 @@ ApplicationWindow {
 
                     onActiveChanged: {
                         var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[3]
+                                    tview1.currentIndex).children[0].data[4]
                         addr1.text = x.getDir()
                     }
 
                     onActiveFocusChanged: {
                         var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[3]
+                                    tview1.currentIndex).children[0].data[4]
                         addr1.text = x.getDir()
                     }
 
@@ -676,7 +687,7 @@ ApplicationWindow {
                         tview1.currentIndex = tview1.count - 2
 
                         var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[3]
+                                    tview1.currentIndex).children[0].data[4]
                         addr1.text = x.getDir()
                         console.log("Tab1");
                     }
@@ -688,7 +699,7 @@ ApplicationWindow {
                             tview1.currentIndex = tview1.count - 2
 
                             var x = tview1.getTab(
-                                        tview1.currentIndex).children[0].data[3]
+                                        tview1.currentIndex).children[0].data[4]
                             addr1.text = x.getDir()
                             console.log("Tab2");
                         }
@@ -743,7 +754,7 @@ ApplicationWindow {
                                    tview1.currentIndex = 0;
                                    if (tview1.currentIndex >= 0) {
                                       var x = tview1.getTab(
-                                              tview1.currentIndex).children[0].data[3]
+                                              tview1.currentIndex).children[0].data[4]
                                       addr1.text = x.getDir()
                                    }
                                    tview1.removeTab(currentIndex)

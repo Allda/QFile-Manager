@@ -10,6 +10,7 @@ class File : public QObject
     Q_PROPERTY (QString name READ getName NOTIFY nameChanged)
     Q_PROPERTY (QString type READ getType NOTIFY typeChanged)
     Q_PROPERTY (QString size READ getSize NOTIFY sizeChanged)
+    Q_PROPERTY (QString icon READ getIcon NOTIFY typeChanged)
 public:
     explicit File(QObject *parent = 0);
     File(QString name, QString dir, QObject *parrent = 0);
@@ -17,6 +18,7 @@ public:
     QString getName () const { return m_name; }
     QString getType () const { return m_type; }
     QString getSize () const { return m_size; }
+    QString getIcon();
     QString converSize(qint64 size);
 signals:
     void wholeNameChanged();

@@ -51,3 +51,25 @@ QString File::converSize(qint64 size){
     else
         return QString::number(size) + " B";
 }
+
+QString File::getIcon(){
+    if(this->m_type == "jpg" || this->m_type == "png"){
+        return "/icons/picture.png";
+    }
+    else if(this->m_type == "avi" || this->m_type == "mpeg"){
+        return "/icons/film.png";
+    }
+    else if(this->m_name == ".."){
+        return "/icons/back.png";
+    }
+    else if(this->m_type == "" && this->isFile == false){
+        return "/icons/folder.png";
+    }
+    else if(this->m_type == "mp3"){
+        return "/icons/music.png";
+    }
+    else{
+        return "/icons/others.png";
+    }
+}
+
