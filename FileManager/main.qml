@@ -21,6 +21,8 @@ ApplicationWindow {
     property bool cutFlag: false
     property string lastFile: ""
     property real progressVal: 0.0
+    property int lengthBut: 50
+    property bool helpBut: false
 
     Menu {
         title: "Edit"
@@ -406,8 +408,8 @@ ApplicationWindow {
 
                         onEditingFinished: {
                             var x = tview1.getTab(
-                                        tview1.currentIndex).children[0].data[3]
-                            x.changeDir(addr1.text)
+                                    tview1.currentIndex).children[0].data[3]
+                                    x.changeDir(addr1.text)
                         }
                     }
 
@@ -435,7 +437,8 @@ ApplicationWindow {
                                 /* Set items visibility for layout 2 */
                                 for (var i = 0; i < diskP1.getListLength(
                                          ); i++) {
-                                    rep1.itemAt(i).visible = true
+                                    if (rep1.itemAt(i) !== null)
+                                        rep1.itemAt(i).visible = true
                                 }
 
                                 /* Load layout with disk choose */
@@ -477,7 +480,14 @@ ApplicationWindow {
                     Repeater {
                         id: rep1
 
-                        model: diskP1.getListLength()
+                        model: {
+                            if ((split5.width / diskP1.getListLength(
+                                     )) > lengthBut)
+                                diskP1.getListLength()
+                            else {
+                                3
+                            }
+                        }
 
                         Button {
                             text: diskP1.diskList[index]
@@ -485,17 +495,17 @@ ApplicationWindow {
 
                             Layout.maximumWidth: {
                                 if ((split5.width / diskP1.getListLength(
-                                         )) > 50)
+                                         )) > lengthBut)
                                     split5.width / diskP1.getListLength()
                                 else
-                                    50
+                                    lengthBut
                             }
                             Layout.minimumWidth: {
                                 if ((split5.width / diskP1.getListLength(
-                                         )) > 50)
+                                         )) > lengthBut)
                                     split5.width / diskP1.getListLength()
                                 else
-                                    50
+                                    lengthBut
                             }
 
                             MouseArea {
@@ -651,11 +661,14 @@ ApplicationWindow {
                                     tview1.currentIndex).children[0].data[3]
                         addr1.text = x.getDir()
                     }
+
                 }
 
                 /* Tab plus */
                 Tab {
                     title: "+"
+                    width: text.width + 24
+                    height: 20
 
                     onActiveChanged: {
                         tview1.insertTab(tview1.count - 1,
@@ -665,6 +678,7 @@ ApplicationWindow {
                         var x = tview1.getTab(
                                     tview1.currentIndex).children[0].data[3]
                         addr1.text = x.getDir()
+                        console.log("Tab1");
                     }
 
                     onVisibleChanged: {
@@ -676,8 +690,69 @@ ApplicationWindow {
                             var x = tview1.getTab(
                                         tview1.currentIndex).children[0].data[3]
                             addr1.text = x.getDir()
+                            console.log("Tab2");
                         }
                     }
+                }
+
+                style: TabViewStyle {
+                   property color frameColor: "lightsteelblue"
+                   property color fillColor: "#91919B"
+                   frameOverlap: 1
+
+                   tab: Rectangle {
+                       color: styleData.selected ? fillColor : frameColor
+                       border.color: "#71717B"
+                       implicitWidth: Math.max(text.width + 24, 80)
+                       implicitHeight: 20
+                       radius: 2
+                       Text {
+                           id: text
+                           anchors.left: parent.left
+                           anchors.verticalCenter: parent.verticalCenter
+                           anchors.leftMargin: 6
+                           text: styleData.title
+                           color: styleData.selected ? "white" : "black"
+                       }
+
+                       Rectangle {
+                           id: neco
+                           visible: {
+                               if (tview1)
+                                   if (tview1.count > 2)
+                                       true
+                                   else
+                                       false
+                           }
+                           anchors.right: parent.right
+                           anchors.verticalCenter: parent.verticalCenter
+                           anchors.rightMargin: 4
+                           implicitWidth: 14
+                           implicitHeight: 14
+                           radius: width/2
+                           color: "grey"
+                           border.color: "black"
+                           Text {text: "X" ; anchors.centerIn: parent ; color: "white"; font.pixelSize: 8;}
+                           MouseArea {
+                               hoverEnabled: true
+                               anchors.fill: parent
+                               onClicked: {
+                                   console.log(tview1.currentIndex + "|" + tview1.count);
+
+                                   var currentIndex = tview1.currentIndex
+                                   tview1.currentIndex = 0;
+                                   if (tview1.currentIndex >= 0) {
+                                      var x = tview1.getTab(
+                                              tview1.currentIndex).children[0].data[3]
+                                      addr1.text = x.getDir()
+                                   }
+                                   tview1.removeTab(currentIndex)
+                               }
+                               onEntered: neco.color = "black";
+                               onExited: neco.color = "grey";
+                           }
+                       }
+                   }
                 }
             }
         }
