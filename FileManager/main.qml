@@ -363,8 +363,7 @@ ApplicationWindow {
                 iconSource: "icons/open.png"
                 onClicked: cdUp()
             }
-
-            TextField {
+            Label {
                 Layout.fillWidth: true
                 anchors.right: parent.right
             }
@@ -530,10 +529,31 @@ ApplicationWindow {
                         TableView {
                             selectionMode: SelectionMode.ExtendedSelection
                             sortIndicatorVisible: true
+                                    Image {
+                                        id: background
+                                        anchors.fill: parent
+                                        opacity: 0.2
+                                        anchors.topMargin: 15
+                                        anchors.rightMargin: 15
+                                        anchors.leftMargin: 15
+                                        anchors.bottomMargin: 15
 
+                                        source: "icons/open.png"
+                                             }
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
+                                delegate:
+                                        Text {
+                                            text: styleData.value
+                                            x: 25
+                                            Image{
+                                                source: "icons/new.png"
+                                                width: 15; height: 15
+                                                x: -25
+                                                fillMode: Image.PreserveAspectFit
+                                            }
+                                    }
                                 width: parent.width / 2
                             }
                             TableViewColumn {
