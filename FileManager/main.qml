@@ -109,7 +109,7 @@ ApplicationWindow {
     }
 
     function paste() {
-        var x = getActivTab().data[3]
+        var x = getActivTab().data[4]
         for (var i = 0; i < clipboard.length; i++) {
             if (cutFlag)
                 x.moveToDir(clipboard[i])
@@ -645,12 +645,10 @@ ApplicationWindow {
                                         if (getSelectionCount() < 1) {
                                             cutOpt.enabled = false
                                             copyOpt.enabled = false
-                                            pasteOpt.enabled = false
                                             deleteOpt.enabled = false
                                         } else {
                                             cutOpt.enabled = true
                                             copyOpt.enabled = true
-                                            pasteOpt.enabled = true
                                             deleteOpt.enabled = true
                                         }
 
