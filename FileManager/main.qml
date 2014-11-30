@@ -342,6 +342,7 @@ ApplicationWindow {
                         anchors.left: wholeRedText.right
                         width: parent.width - 50
                         value: backgroundColorOfWholeAppRed
+                        stepSize: 0.005
                         maximumValue: 1
                         minimumValue: 0
                         onValueChanged: backgroundColorOfWholeAppRed = value
@@ -359,6 +360,7 @@ ApplicationWindow {
                         anchors.left: wholeGreenText.right
                         anchors.top: wholeRedText.bottom
                         width: parent.width - 50
+                        stepSize: 0.005
                         value: backgroundColorOfWholeAppGreen
                         maximumValue: 1
                         minimumValue: 0
@@ -377,6 +379,7 @@ ApplicationWindow {
                         anchors.left: wholeBlueText.right
                         anchors.top: wholeGreenText.bottom
                         width: parent.width - 50
+                        stepSize: 0.005
                         value: backgroundColorOfWholeAppBlue
                         maximumValue: 1
                         minimumValue: 0
@@ -400,6 +403,7 @@ ApplicationWindow {
                         id: panelsRedSlider
                         anchors.left: panelsRedText.right
                         width: parent.width - 50
+                        stepSize: 0.005
                         value: backgroundColorOfBothPanelsRed
                         maximumValue: 1
                         minimumValue: 0
@@ -418,6 +422,7 @@ ApplicationWindow {
                         anchors.left: panelsGreenText.right
                         anchors.top: panelsRedText.bottom
                         width: parent.width - 50
+                        stepSize: 0.005
                         value: backgroundColorOfBothPanelsGreen
                         maximumValue: 1
                         minimumValue: 0
@@ -436,6 +441,7 @@ ApplicationWindow {
                         anchors.left: panelsBlueText.right
                         anchors.top: panelsGreenText.bottom
                         width: parent.width - 50
+                        stepSize: 0.005
                         value: backgroundColorOfBothPanelsBlue
                         maximumValue: 1
                         minimumValue: 0
@@ -576,6 +582,7 @@ ApplicationWindow {
                     /* Address line */
                     TextField {
                         id: addr1
+                        style: TextFieldStyle{ }
                         placeholderText: "Address here"
                         Layout.minimumWidth: parent.width * 0.75
                         Layout.maximumWidth: parent.width * 0.75
