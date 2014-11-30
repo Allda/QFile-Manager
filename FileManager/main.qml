@@ -722,7 +722,7 @@ ApplicationWindow {
                         TableView {
                             style: TableViewStyle{
                                 backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
-                                alternateBackgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
+                                alternateBackgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed-0.05,backgroundColorOfBothPanelsGreen-0.05,backgroundColorOfBothPanelsBlue-0.05, 1)
                             }
 
                             onClicked: {
