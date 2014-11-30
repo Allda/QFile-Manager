@@ -22,6 +22,7 @@ public:
     Q_INVOKABLE void rename(QString oldName, QString newName);
     Q_INVOKABLE void newFolder(QString name);
     Q_INVOKABLE void newFile(QString name);
+    Q_INVOKABLE void refresh();
     void copyPath(QString src, QString dst);
     bool removeDir(const QString & dirName);
     /*void addToSelected(QString item);

@@ -53,6 +53,29 @@ QString File::converSize(qint64 size){
 }
 
 QString File::getIcon(){
+    /*if(this->m_type == "jpg" || this->m_type == "png"){
+        return "/icons/picture11.png";
+    }
+    else if(this->m_type == "avi" || this->m_type == "mpeg"){
+        return "/icons/film51.png";
+    }
+    else if(this->m_name == ".."){
+        return "/icons/back57.png";
+    }
+    else if(this->m_type == "" && this->isFile == false){
+        return "/icons/folder250.png";
+    }
+    else if(this->m_type == "mp3"){
+        return "/icons/musical.png";
+    }
+    else if(this->m_type == "pdf"){
+        return "/icons/pdf17.png";
+    }
+    else{
+        return "/icons/others.png";
+    }*/
+
+
     if(this->m_type == "jpg" || this->m_type == "png"){
         return "/icons/picture.png";
     }
@@ -60,7 +83,7 @@ QString File::getIcon(){
         return "/icons/film.png";
     }
     else if(this->m_name == ".."){
-        return "/icons/back.png";
+        return "/icons/back57.svg";
     }
     else if(this->m_type == "" && this->isFile == false){
         return "/icons/folder.png";

@@ -149,6 +149,10 @@ void Directory::rename(QString oldName, QString newName){
     loadFiles();
 }
 
+void Directory::refresh(){
+    loadFiles();
+}
+
 /*void Directory::addToSelected(QString item){
     selectedFiles.append(item);
 }

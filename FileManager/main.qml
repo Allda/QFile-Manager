@@ -109,6 +109,8 @@ ApplicationWindow {
     }
 
     function paste() {
+        if(getActivTab() === null)
+            return
         var x = getActivTab().data[4]
         for (var i = 0; i < clipboard.length; i++) {
             if (cutFlag)
@@ -117,6 +119,9 @@ ApplicationWindow {
                 x.copyToDir(clipboard[i])
             label.text = "Copy: " + clipboard[i]
             progressVal = (i + 1) / clipboard.length
+            statusBar.update()
+
+
         }
         label.text = "Done"
     }
@@ -149,6 +154,8 @@ ApplicationWindow {
 
     function del() {
         var x = getActivTab()
+        if(x === null)
+            return
         var len = getSelectionCount()
         ProgressBar.maximumValue = len
         var j = 1
@@ -181,18 +188,23 @@ ApplicationWindow {
     }
 
     function cdUp() {
+        if(getActivTab() === null)
+            return
         var x = getActivTab().data[4]
         x.cdUp()
     }
 
     function getCurrentRow() {
         var x = getActivTab()
+        if(x === null)
+            return ""
         var a = ""
         x.selection.forEach(function (rowIndex) {
             a = x.model[rowIndex].wholeName
         })
         return a
     }
+
 
     MessageDialog {
         id: removeDialog
@@ -300,7 +312,8 @@ ApplicationWindow {
             MenuItem {
                 text: "New file"
                 //shortcut: "Ctrl+N"
-                iconSource: "icons/new.png"
+                //iconSource: "icons/new.png"
+                iconSource: "icons/add26.png"
                 onTriggered: newFile()
             }
 
@@ -349,22 +362,36 @@ ApplicationWindow {
             width: parent.width
             ToolButton {
                 text: "New file"
-                iconSource: "icons/new.png"
+                tooltip: text
+                //iconSource: "icons/new.png"
+                iconSource: "icons/add26.png"
                 onClicked: newFile()
             }
-            ToolButton {
+            /*ToolButton {
                 text: "Open file"
                 iconSource: "icons/open.png"
-            }
+            }*/
             ToolButton {
                 text: "Save file"
+                tooltip: text
                 iconSource: "icons/save.png"
             }
 
             ToolButton {
                 text: "Up"
-                iconSource: "icons/open.png"
+                tooltip: text
+                //iconSource: "icons/open.png"
+                iconSource: "icons/upload58.png"
                 onClicked: cdUp()
+            }
+            ToolButton {
+                text: "Refresh"
+                tooltip: text
+                iconSource: "icons/refresh.png"
+                onClicked: {
+                    var x = getActivTab().data[4]
+                    x.refresh()
+                }
             }
             Label {
                 Layout.fillWidth: true
@@ -538,6 +565,7 @@ ApplicationWindow {
                     Component {
                         id: tab1
                         TableView {
+
                             onClicked: {
                                 var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                 if(pattern.test(getCurrentRow())){
@@ -547,6 +575,8 @@ ApplicationWindow {
                                 else{
                                     background.opacity = 0.0
                                 }
+
+
                             }
                             selectionMode: SelectionMode.ExtendedSelection
                             sortIndicatorVisible: true
@@ -615,6 +645,16 @@ ApplicationWindow {
                                 if (event.key === Qt.Key_Delete) {
                                     showDeleteDialog()
                                 }
+                                if(event.key === Qt.Key_Down || event.key === Qt.Key_Up){
+                                    var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
+                                    if(pattern.test(getCurrentRow())){
+                                        background.opacity = 0.3
+                                        backgroundSource = "file://" + addr1.text + "/" +  getCurrentRow()
+                                    }
+                                    else{
+                                        background.opacity = 0.0
+                                    }
+                                }
                             }
 
                             Directory {
@@ -624,20 +664,23 @@ ApplicationWindow {
                             model: {
                                 temp.files
                             }
+
                             onActivated: {
                                 temp.changeDir(
                                             temp.getDir(
                                                 ) + "/" + model[currentRow].wholeName)
                                 addr1.text = temp.getDir()
+
                             }
 
                             MouseArea {
                                 anchors.fill: parent
+                                id: listMouseArea
                                 acceptedButtons: Qt.RightButton
-                                onClicked: {
+                                //propagateComposedEvents: true
+                                onClicked:  {
                                     if (mouse.button == Qt.RightButton) {
-                                        console.log("Pocet: " + getSelectionCount(
-                                                        ))
+
                                         if (getSelectionCount() !== 1)
                                             renameOpt.enabled = false
                                         else
@@ -651,11 +694,15 @@ ApplicationWindow {
                                             copyOpt.enabled = true
                                             deleteOpt.enabled = true
                                         }
-
                                         contextMenu.popup()
                                     }
+                                    //mouse.accepted = false
                                 }
+                                //onReleased: mouse.accepted = false
+                                //onPressAndHold:  mouse.accepted = false
                             }
+
+
                         }
                     }
 
@@ -810,6 +857,7 @@ ApplicationWindow {
 
     /* */
     statusBar: StatusBar {
+        id:statusBar
         RowLayout {
             width: parent.width
             Label {
