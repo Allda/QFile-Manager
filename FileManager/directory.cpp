@@ -18,7 +18,7 @@ void Directory::loadFiles(){
     QDir directory(this->dir);
     files = directory.entryList();
     this->m_files.clear();
-    for(int i = 0; i < files.count();i++){
+    for(int i = 1; i < files.count();i++){
         //qDebug() << files.at(i);
         this->m_files.append(new File(files.at(i), this->dir));
     }

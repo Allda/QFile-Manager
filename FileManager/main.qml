@@ -15,6 +15,7 @@ ApplicationWindow {
     height: 480
     minimumHeight: 480
     title: "File Manager"
+    color: Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
 
     /* */
     property variant clipboard: []
@@ -24,6 +25,12 @@ ApplicationWindow {
     property int lengthBut: 50
     property bool helpBut: false
     property string backgroundSource: "icons/save.png"
+    property real backgroundColorOfWholeAppRed: 0.9
+    property real backgroundColorOfWholeAppGreen: 0.9
+    property real backgroundColorOfWholeAppBlue: 0.9
+    property real backgroundColorOfBothPanelsRed: 0.9
+    property real backgroundColorOfBothPanelsGreen: 0.9
+    property real backgroundColorOfBothPanelsBlue: 0.9
 
     Menu {
         title: "Edit"
@@ -150,6 +157,11 @@ ApplicationWindow {
     function newFile() {
         newFileDialog.visible = true
         newFileDialog.open()
+    }
+
+    function changeColor(){
+        colorsDialog.visible = true
+        colorsDialog.open()
     }
 
     function del() {
@@ -305,6 +317,135 @@ ApplicationWindow {
         }
     }
 
+    Dialog {
+        id: colorsDialog
+        title: "Change Color"
+        height: 210
+        width: 300
+        standardButtons: StandardButton.Ok | StandardButton.Cancel
+        TabView{
+            anchors.fill: parent
+            Tab{
+                title: "Whole app"
+                Rectangle{
+                    anchors.fill: parent
+                    anchors.topMargin: 10
+                    Text {
+                        id: wholeRedText
+                        text: "Red"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: wholeRedSlider
+                        anchors.left: wholeRedText.right
+                        width: parent.width - 50
+                        value: backgroundColorOfWholeAppRed
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundColorOfWholeAppRed = value
+                    }
+                    Text {
+                        id: wholeGreenText
+                        anchors.top: wholeRedText.bottom
+                        text: "Green"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: wholeGreenSlider
+                        anchors.left: wholeGreenText.right
+                        anchors.top: wholeRedText.bottom
+                        width: parent.width - 50
+                        value: backgroundColorOfWholeAppGreen
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundColorOfWholeAppGreen = value
+                    }
+                    Text {
+                        id: wholeBlueText
+                        anchors.top: wholeGreenText.bottom
+                        text: "Blue"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: wholeBlueSlider
+                        anchors.left: wholeBlueText.right
+                        anchors.top: wholeGreenText.bottom
+                        width: parent.width - 50
+                        value: backgroundColorOfWholeAppBlue
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundColorOfWholeAppBlue = value
+                    }
+                }
+            }
+            Tab{
+                title: "Panels"
+                Rectangle{
+                    anchors.fill: parent
+                    anchors.topMargin: 10
+                    Text {
+                        id: panelsRedText
+                        text: "Red"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: panelsRedSlider
+                        anchors.left: panelsRedText.right
+                        width: parent.width - 50
+                        value: backgroundColorOfBothPanelsRed
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundColorOfBothPanelsRed = value
+                    }
+                    Text {
+                        id: panelsGreenText
+                        anchors.top: panelsRedText.bottom
+                        text: "Green"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: panelsGreenSlider
+                        anchors.left: panelsGreenText.right
+                        anchors.top: panelsRedText.bottom
+                        width: parent.width - 50
+                        value: backgroundColorOfBothPanelsGreen
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundColorOfBothPanelsGreen = value
+                    }
+                    Text {
+                        id: panelsBlueText
+                        anchors.top: panelsGreenText.bottom
+                        text: "Blue"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: panelsBlueSlider
+                        anchors.left: panelsBlueText.right
+                        anchors.top: panelsGreenText.bottom
+                        width: parent.width - 50
+                        value: backgroundColorOfBothPanelsBlue
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundColorOfBothPanelsBlue = value
+                    }
+                }
+            }
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: "File"
@@ -312,8 +453,8 @@ ApplicationWindow {
             MenuItem {
                 text: "New file"
                 //shortcut: "Ctrl+N"
-                //iconSource: "icons/new.png"
-                iconSource: "icons/add26.png"
+                iconSource: "icons/new.png"
+                //iconSource: "icons/add26.png"
                 onTriggered: newFile()
             }
 
@@ -343,6 +484,7 @@ ApplicationWindow {
 
             MenuItem {
                 text: "Colors"
+                onTriggered: changeColor();
             }
         }
 
@@ -358,13 +500,16 @@ ApplicationWindow {
     /*  */
     toolBar: ToolBar {
         id: tool
+        style: ToolBarStyle{
+            background: Rectangle{color: Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)}
+        }
         RowLayout {
             width: parent.width
             ToolButton {
                 text: "New file"
                 tooltip: text
-                //iconSource: "icons/new.png"
-                iconSource: "icons/add26.png"
+                iconSource: "icons/new.png"
+                //iconSource: "icons/add26.png"
                 onClicked: newFile()
             }
             /*ToolButton {
@@ -380,14 +525,14 @@ ApplicationWindow {
             ToolButton {
                 text: "Up"
                 tooltip: text
-                //iconSource: "icons/open.png"
-                iconSource: "icons/upload58.png"
+                iconSource: "icons/open.png"
+                //iconSource: "icons/upload58.png"
                 onClicked: cdUp()
             }
             ToolButton {
                 text: "Refresh"
                 tooltip: text
-                iconSource: "icons/refresh.png"
+                iconSource: "icons/film.png"
                 onClicked: {
                     var x = getActivTab().data[4]
                     x.refresh()
@@ -404,6 +549,7 @@ ApplicationWindow {
     SplitView {
         id: split
         anchors.fill: parent
+
 
         /* Left window */
         SplitView {
@@ -565,6 +711,10 @@ ApplicationWindow {
                     Component {
                         id: tab1
                         TableView {
+                            style: TableViewStyle{
+                                backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
+                                alternateBackgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
+                            }
 
                             onClicked: {
                                 var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
@@ -858,6 +1008,9 @@ ApplicationWindow {
     /* */
     statusBar: StatusBar {
         id:statusBar
+        style: StatusBarStyle{
+            background: Rectangle{color: Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue, 1)}
+        }
         RowLayout {
             width: parent.width
             Label {

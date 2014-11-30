@@ -83,7 +83,7 @@ QString File::getIcon(){
         return "/icons/film.png";
     }
     else if(this->m_name == ".."){
-        return "/icons/back57.svg";
+        return "/icons/back.png";
     }
     else if(this->m_type == "" && this->isFile == false){
         return "/icons/folder.png";
