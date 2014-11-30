@@ -534,6 +534,8 @@ ApplicationWindow {
                 tooltip: text
                 iconSource: "icons/film.png"
                 onClicked: {
+                    if(getActivTab() === null)
+                        return
                     var x = getActivTab().data[4]
                     x.refresh()
                 }
