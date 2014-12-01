@@ -133,6 +133,31 @@ ApplicationWindow {
         label.text = "Done"
     }
 
+    function copyCutFromTo(from, to, flag){
+        addToClipboard(from)
+        cutFlag = flag
+        pasteToTab(to)
+        getLeftTab().data[4].refresh()
+        getRightTab().data[4].refresh()
+    }
+
+    function pasteToTab(tab) {
+
+        var x = tab.data[4]
+        for (var i = 0; i < clipboard.length; i++) {
+            if (cutFlag)
+                x.moveToDir(clipboard[i])
+            else
+                x.copyToDir(clipboard[i])
+            label.text = "Copy: " + clipboard[i]
+            progressVal = (i + 1) / clipboard.length
+            statusBar.update()
+
+
+        }
+        label.text = "Done"
+    }
+
     function addToClipboard(tab) {
         var clip = new Array()
         if (tab === null)
@@ -185,11 +210,19 @@ ApplicationWindow {
     function getActivTab() {
         if (tview1.focus) {
             var x = tview1.getTab(tview1.currentIndex).children[0]
-        } /*else if(tview2.focus)
-                            var x = tview2.getTab(tview2.currentIndex).children[0]*/
+        } else if(tview2.focus)
+            var x = tview2.getTab(tview2.currentIndex).children[0]
         else
             return null
         return x
+    }
+
+    function getLeftTab(){
+        return tview1.getTab(tview1.currentIndex).children[0]
+    }
+
+    function getRightTab(){
+        return tview2.getTab(tview2.currentIndex).children[0]
     }
 
     function getSelectionCount() {
@@ -781,8 +814,7 @@ ApplicationWindow {
                                 if (event.modifiers & Qt.ControlModifier) {
                                     // CTRL + ->
                                     if (event.key === Qt.Key_Right) {
-                                        var x = tview1.getTab(
-                                                    tview1.currentIndex).children[0]
+                                        copyCutFromTo(getLeftTab(), getRightTab(), false)
                                         console.log('Copy')
 
                                         event.accepted = true
@@ -791,8 +823,7 @@ ApplicationWindow {
                                 if (event.modifiers & Qt.AltModifier) {
                                     // ALT + ->
                                     if (event.key === Qt.Key_Right) {
-                                        var x = tview1.getTab(
-                                                    tview1.currentIndex).children[0]
+                                        copyCutFromTo(getLeftTab(), getRightTab(), true)
                                         console.log('Cut')
 
                                         event.accepted = true
@@ -976,40 +1007,411 @@ ApplicationWindow {
         SplitView {
             id: split3
             orientation: Qt.Vertical
-            resizing: false
+            width: parent.width / 2
+            Layout.minimumWidth: parent.width / 2
+            Layout.maximumWidth: parent.width / 2
 
-            TextField {
-                placeholderText: "Address here"
-                Layout.minimumHeight: 20
-                Layout.maximumHeight: 20
-            }
+            /* Address line and button */
+            StackView {
+                id: stack2
+                initialItem: item1
+                Layout.minimumHeight: 25
+                Layout.maximumHeight: 25
 
-            ListModel {
-                id: listmodel2
-                ListElement {
-                    Name: "ITU-project"
-                    Type: "exe"
-                    Size: "4224 Bytes"
+                /* Init layout */
+                SplitView {
+                    id: item2
+                    anchors.fill: parent
+                    Layout.minimumHeight: 25
+                    Layout.maximumHeight: 25
+
+                    /* Address line */
+                    TextField {
+                        id: addr2
+                        style: TextFieldStyle{ }
+                        placeholderText: "Address here"
+                        Layout.minimumWidth: parent.width * 0.75
+                        Layout.maximumWidth: parent.width * 0.75
+
+                        onEditingFinished: {
+                            var x = tview2.getTab(
+                                    tview2.currentIndex).children[0].data[4]
+                                    x.changeDir(addr2.text)
+                        }
+                    }
+
+                    /* Change disk */
+                    Button {
+                        id: butt2
+                        text: "Change disk"
+                        visible: true
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onClicked: {
+                                /* If animations are complete */
+                                if (xAnim3.running == false)
+                                    if (xAnim4.running == false)
+                                        if (stack2.x == 0) {
+                                            xAnim3.start()
+                                            //console.log("Anim1 start")
+                                        } else {
+                                            xAnim4.start()
+                                            //console.log("Anim2 start")
+                                        }
+
+                                /* Set items visibility for layout 2 */
+                                for (var i = 0; i < diskP1.getListLength(
+                                         ); i++) {
+                                    if (rep2.itemAt(i) !== null)
+                                        rep2.itemAt(i).visible = true
+                                }
+
+                                /* Load layout with disk choose */
+                                stack2.push(split6)
+                            }
+                        }
+                    }
+
+                    /* Animations of change layouts */
+                    SequentialAnimation on x {
+                        id: xAnim3
+                        running: false
+                        alwaysRunToEnd: true
+                        NumberAnimation {
+                            from: stack2.x
+                            to: -(stack2.width * 0.8)
+                            duration: 2000
+                            easing.type: Easing.OutQuint
+                        }
+                    }
+
+                    SequentialAnimation on x {
+                        id: xAnim4
+                        running: false
+                        alwaysRunToEnd: true
+                        NumberAnimation {
+                            from: stack2.x
+                            to: 0
+                            duration: 2000
+                            easing.type: Easing.OutQuint
+                        }
+                    }
+                }
+
+                /* Layout (2) of choose disk */
+                SplitView {
+                    id: split6
+
+                    Repeater {
+                        id: rep2
+
+                        model: {
+                            if ((split6.width / diskP1.getListLength(
+                                     )) > lengthBut)
+                                diskP6.getListLength()
+                            else {
+                                3
+                            }
+                        }
+
+                        Button {
+                            text: diskP1.diskList[index]
+                            visible: false
+
+                            Layout.maximumWidth: {
+                                if ((split6.width / diskP1.getListLength(
+                                         )) > lengthBut)
+                                    split6.width / diskP1.getListLength()
+                                else
+                                    lengthBut
+                            }
+                            Layout.minimumWidth: {
+                                if ((split6.width / diskP1.getListLength(
+                                         )) > lengthBut)
+                                    split6.width / diskP1.getListLength()
+                                else
+                                    lengthBut
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    /* Change disk */
+                                    var x = tview2.getTab(
+                                                tview2.currentIndex).children[0].data[4]
+                                    x.changeDir(diskP1.diskList[index])
+                                    /* Set disk path */
+                                    addr2.text = diskP1.diskList[index]
+                                    /* Return to origin state */
+                                    stack2.pop(true)
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            TableView {
-                TableViewColumn {
-                    role: "Name"
-                    title: "Name"
-                }
-                TableViewColumn {
-                    role: "Type"
-                    title: "Type"
-                    width: 50
-                }
-                TableViewColumn {
-                    role: "Size"
-                    title: "Size"
-                    width: 100
+            /* Table of views (2 tabs) */
+            TabView {
+                /* First tab */
+                id: tview2
+                //var clipboard = []
+                Tab {
+                    title: "Tab 1"
+                    Component {
+                        id: tab2
+                        TableView {
+                            style: TableViewStyle{
+                                backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
+                                alternateBackgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed-0.05,backgroundColorOfBothPanelsGreen-0.05,backgroundColorOfBothPanelsBlue-0.05, 1)
+                            }
+
+                            onClicked: {
+                                var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
+                                if(pattern.test(getCurrentRow())){
+                                    background.opacity = 0.3
+                                    backgroundSource = "file://" + addr1.text + "/" +  getCurrentRow()
+                                }
+                                else{
+                                    background.opacity = 0.0
+                                }
+
+
+                            }
+                            selectionMode: SelectionMode.ExtendedSelection
+                            sortIndicatorVisible: true
+                            Image {
+                                id: background
+                                anchors.fill: parent
+                                opacity: 0.0
+                                anchors.topMargin: 25
+                                anchors.rightMargin: 0
+                                anchors.leftMargin: 0
+                                anchors.bottomMargin: 20
+
+                                source: backgroundSource
+                            }
+                            TableViewColumn{
+                                role: "icon"
+
+                                delegate:
+                                     Image{
+                                            source: styleData.value
+                                            width: 15; height: 15
+                                            fillMode: Image.PreserveAspectFit
+                                     }
+                                width: 20
+                            }
+                            TableViewColumn {
+                                role: "name"
+                                title: "Name"
+                                width: (parent.width / 2)-20
+                            }
+                            TableViewColumn {
+                                role: "type"
+                                title: "Type"
+                                width: parent.width / 4
+                            }
+                            TableViewColumn {
+                                role: "size"
+                                title: "Size"
+                                width: parent.width / 4
+                            }
+
+                            Keys.onPressed: {
+                                if (event.modifiers & Qt.ControlModifier) {
+                                    // CTRL + ->
+                                    if (event.key === Qt.Key_Left) {
+                                        copyCutFromTo(getRightTab(), getLeftTab(), false)
+                                        console.log('Copy')
+
+                                        event.accepted = true
+                                    }
+                                }
+                                if (event.modifiers & Qt.AltModifier) {
+                                    // ALT + ->
+                                    if (event.key === Qt.Key_Left) {
+                                        copyCutFromTo(getRightTab(), getLeftTab(), true)
+                                        console.log('Cut')
+
+                                        event.accepted = true
+                                    }
+                                }
+                                if (event.key == Qt.Key_Backspace) {
+                                    cdUp()
+                                }
+                                if (event.key === Qt.Key_Delete) {
+                                    showDeleteDialog()
+                                }
+
+                                if(event.key === Qt.Key_Down || event.key === Qt.Key_Up){
+                                    var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
+                                    if(pattern.test(getCurrentRow())){
+                                        background.opacity = 0.3
+                                        backgroundSource = "file://" + addr2.text + "/" +  getCurrentRow()
+                                    }
+                                    else{
+                                        background.opacity = 0.0
+                                    }
+                                }
+                            }
+
+                            Directory {
+                                id: temp2
+                            }
+
+                            model: {
+                                temp2.files
+                            }
+
+                            onActivated: {
+                                temp2.changeDir(
+                                            temp2.getDir(
+                                                ) + "/" + model[currentRow].wholeName)
+                                addr2.text = temp2.getDir()
+
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                id: listMouseArea
+                                acceptedButtons: Qt.RightButton
+                                //propagateComposedEvents: true
+                                onClicked:  {
+                                    if (mouse.button == Qt.RightButton) {
+
+                                        if (getSelectionCount() !== 1)
+                                            renameOpt.enabled = false
+                                        else
+                                            renameOpt.enabled = true
+                                        if (getSelectionCount() < 1) {
+                                            cutOpt.enabled = false
+                                            copyOpt.enabled = false
+                                            deleteOpt.enabled = false
+                                        } else {
+                                            cutOpt.enabled = true
+                                            copyOpt.enabled = true
+                                            deleteOpt.enabled = true
+                                        }
+                                        contextMenu.popup()
+                                    }
+                                    //mouse.accepted = false
+                                }
+                                //onReleased: mouse.accepted = false
+                                //onPressAndHold:  mouse.accepted = false
+                            }
+
+
+                        }
+                    }
+
+                    onActiveChanged: {
+                        var x = tview2.getTab(
+                                    tview2.currentIndex).children[0].data[4]
+                        addr2.text = x.getDir()
+                    }
+
+                    onActiveFocusChanged: {
+                        var x = tview2.getTab(
+                                    tview2.currentIndex).children[0].data[4]
+                        addr2.text = x.getDir()
+                    }
+
                 }
 
-                model: listmodel2
+                /* Tab plus */
+                Tab {
+                    title: "+"
+                    width: text.width + 24
+                    height: 20
+
+                    onActiveChanged: {
+                        tview2.insertTab(tview2.count - 1,
+                                         "Tab " + tview2.count, tab2)
+                        tview2.currentIndex = tview2.count - 2
+
+                        var x = tview1.getTab(
+                                    tview1.currentIndex).children[0].data[4]
+                        addr1.text = x.getDir()
+                        console.log("Tab2");
+                    }
+
+                    onVisibleChanged: {
+                        if (tview2.currentIndex == (tview2.count - 1)) {
+                            tview2.insertTab(tview2.count - 1,
+                                             "Tab " + tview2.count, tab1)
+                            tview2.currentIndex = tview2.count - 2
+
+                            var x = tview2.getTab(
+                                        tview2.currentIndex).children[0].data[4]
+                            addr2.text = x.getDir()
+                            console.log("Tab2");
+                        }
+                    }
+                }
+
+                style: TabViewStyle {
+                   property color frameColor: "lightsteelblue"
+                   property color fillColor: "#91919B"
+                   frameOverlap: 1
+
+                   tab: Rectangle {
+                       color: styleData.selected ? fillColor : frameColor
+                       border.color: "#71717B"
+                       implicitWidth: Math.max(text2.width + 24, 80)
+                       implicitHeight: 20
+                       radius: 2
+                       Text {
+                           id: text2
+                           anchors.left: parent.left
+                           anchors.verticalCenter: parent.verticalCenter
+                           anchors.leftMargin: 6
+                           text: styleData.title
+                           color: styleData.selected ? "white" : "black"
+                       }
+
+                       Rectangle {
+                           id: neco2
+                           visible: {
+                               if (tview2)
+                                   if (tview2.count > 2)
+                                       true
+                                   else
+                                       false
+                           }
+                           anchors.right: parent.right
+                           anchors.verticalCenter: parent.verticalCenter
+                           anchors.rightMargin: 4
+                           implicitWidth: 14
+                           implicitHeight: 14
+                           radius: width/2
+                           color: "grey"
+                           border.color: "black"
+                           Text {text: "X" ; anchors.centerIn: parent ; color: "white"; font.pixelSize: 8;}
+                           MouseArea {
+                               hoverEnabled: true
+                               anchors.fill: parent
+                               onClicked: {
+                                   console.log(tview2.currentIndex + "|" + tview2.count);
+
+                                   var currentIndex = tview2.currentIndex
+                                   tview2.currentIndex = 0;
+                                   if (tview2.currentIndex >= 0) {
+                                      var x = tview2.getTab(
+                                              tview2.currentIndex).children[0].data[4]
+                                      addr2.text = x.getDir()
+                                   }
+                                   tview2.removeTab(currentIndex)
+                               }
+                               onEntered: neco2.color = "black";
+                               onExited: neco2.color = "grey";
+                           }
+                       }
+                   }
+                }
             }
         }
     }

@@ -46,9 +46,11 @@ QString Directory::getDir(){
 }
 
 void Directory::copyToDir(QString file){
+
     QFileInfo f(file);
+    qDebug() << file + " to " +this->dir + f.fileName();
     if(f.isFile()){
-        QFile::copy(file, this->dir + '/' + f.baseName());
+        QFile::copy(file, this->dir + '/' + f.fileName());
     }
     else{
         QDir(this->dir).mkdir(f.baseName());
@@ -81,6 +83,7 @@ void Directory::moveToDir(QString file){
         d.rename(file, this->dir + '/' + f.baseName());
     }
     else{
+        QDir(this->dir).mkdir(f.baseName());
         copyPath(file, this->dir + "/" + f.baseName());
         removeDir(file);
     }
