@@ -24,7 +24,8 @@ ApplicationWindow {
     property real progressVal: 0.0
     property int lengthBut: 50
     property bool helpBut: false
-    property string backgroundSource: "icons/save.png"
+    property string backgroundSourceLeft: "icons/save.png"
+    property string backgroundSourceRight: "icons/save.png"
     property real backgroundColorOfWholeAppRed: 0.9
     property real backgroundColorOfWholeAppGreen: 0.9
     property real backgroundColorOfWholeAppBlue: 0.9
@@ -762,7 +763,7 @@ ApplicationWindow {
                                 var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                 if(pattern.test(getCurrentRow())){
                                     background.opacity = 0.3
-                                    backgroundSource = "file://" + addr1.text + "/" +  getCurrentRow()
+                                    backgroundSourceLeft = "file:" + addr1.text + "/" +  getCurrentRow()
                                 }
                                 else{
                                     background.opacity = 0.0
@@ -776,12 +777,12 @@ ApplicationWindow {
                                 id: background
                                 anchors.fill: parent
                                 opacity: 0.0
-                                anchors.topMargin: 25
-                                anchors.rightMargin: 0
-                                anchors.leftMargin: 0
+                                anchors.topMargin: 18
+                                anchors.rightMargin: 22
+                                anchors.leftMargin: 22
                                 anchors.bottomMargin: 20
 
-                                source: backgroundSource
+                                source: backgroundSourceLeft
                             }
                             TableViewColumn{
                                 role: "icon"
@@ -797,7 +798,7 @@ ApplicationWindow {
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
-                                width: (parent.width / 2)-20
+                                width: (parent.width / 2)-22
                             }
                             TableViewColumn {
                                 role: "type"
@@ -839,7 +840,7 @@ ApplicationWindow {
                                     var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                     if(pattern.test(getCurrentRow())){
                                         background.opacity = 0.3
-                                        backgroundSource = "file://" + addr1.text + "/" +  getCurrentRow()
+                                        backgroundSourceLeft = "file:" + addr1.text + "/" +  getCurrentRow()
                                     }
                                     else{
                                         background.opacity = 0.0
@@ -1173,7 +1174,7 @@ ApplicationWindow {
                                 var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                 if(pattern.test(getCurrentRow())){
                                     background.opacity = 0.3
-                                    backgroundSource = "file://" + addr1.text + "/" +  getCurrentRow()
+                                    backgroundSourceRight = "file:" + addr2.text + "/" +  getCurrentRow()
                                 }
                                 else{
                                     background.opacity = 0.0
@@ -1187,12 +1188,12 @@ ApplicationWindow {
                                 id: background
                                 anchors.fill: parent
                                 opacity: 0.0
-                                anchors.topMargin: 25
-                                anchors.rightMargin: 0
-                                anchors.leftMargin: 0
+                                anchors.topMargin: 18
+                                anchors.rightMargin: 22
+                                anchors.leftMargin: 22
                                 anchors.bottomMargin: 20
 
-                                source: backgroundSource
+                                source: backgroundSourceRight
                             }
                             TableViewColumn{
                                 role: "icon"
@@ -1208,7 +1209,7 @@ ApplicationWindow {
                             TableViewColumn {
                                 role: "name"
                                 title: "Name"
-                                width: (parent.width / 2)-20
+                                width: (parent.width / 2)-22
                             }
                             TableViewColumn {
                                 role: "type"
@@ -1251,7 +1252,7 @@ ApplicationWindow {
                                     var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                     if(pattern.test(getCurrentRow())){
                                         background.opacity = 0.3
-                                        backgroundSource = "file://" + addr2.text + "/" +  getCurrentRow()
+                                        backgroundSourceRight = "file:" + addr2.text + "/" +  getCurrentRow()
                                     }
                                     else{
                                         background.opacity = 0.0
