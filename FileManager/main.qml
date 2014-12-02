@@ -209,21 +209,21 @@ ApplicationWindow {
     }
 
     function getActivTab() {
-        if (tview1.focus) {
-            var x = tview1.getTab(tview1.currentIndex).children[0]
-        } else if(tview2.focus)
-            var x = tview2.getTab(tview2.currentIndex).children[0]
+        if (leftTabView.focus) {
+            var x = leftTabView.getTab(leftTabView.currentIndex).children[0]
+        } else if(rightTabView.focus)
+            var x = rightTabView.getTab(rightTabView.currentIndex).children[0]
         else
             return null
         return x
     }
 
     function getLeftTab(){
-        return tview1.getTab(tview1.currentIndex).children[0]
+        return leftTabView.getTab(leftTabView.currentIndex).children[0]
     }
 
     function getRightTab(){
-        return tview2.getTab(tview2.currentIndex).children[0]
+        return rightTabView.getTab(rightTabView.currentIndex).children[0]
     }
 
     function getSelectionCount() {
@@ -589,13 +589,13 @@ ApplicationWindow {
 
     /* Main window */
     SplitView {
-        id: split
+        id: mainWindow
         anchors.fill: parent
 
 
         /* Left window */
         SplitView {
-            id: split2
+            id: leftWindow
             orientation: Qt.Vertical
             width: parent.width / 2
             Layout.minimumWidth: parent.width / 2
@@ -603,36 +603,36 @@ ApplicationWindow {
 
             /* Address line and button */
             StackView {
-                id: stack1
-                initialItem: item1
+                id: leftAddrLine
+                initialItem: leftItem
                 Layout.minimumHeight: 25
                 Layout.maximumHeight: 25
 
                 /* Init layout */
                 SplitView {
-                    id: item1
+                    id: leftItem
                     anchors.fill: parent
                     Layout.minimumHeight: 25
                     Layout.maximumHeight: 25
 
                     /* Address line */
                     TextField {
-                        id: addr1
+                        id: leftAddr
                         style: TextFieldStyle{ }
                         placeholderText: "Address here"
                         Layout.minimumWidth: parent.width * 0.75
                         Layout.maximumWidth: parent.width * 0.75
 
                         onEditingFinished: {
-                            var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[4]
-                                    x.changeDir(addr1.text)
+                            var x = leftTabView.getTab(
+                                    leftTabView.currentIndex).children[0].data[4]
+                                    x.changeDir(leftAddr.text)
                         }
                     }
 
                     /* Change disk */
                     Button {
-                        id: butt1
+                        id: leftButton
                         text: "Change disk"
                         visible: true
 
@@ -643,7 +643,7 @@ ApplicationWindow {
                                 /* If animations are complete */
                                 if (xAnim1.running == false)
                                     if (xAnim2.running == false)
-                                        if (stack1.x == 0) {
+                                        if (leftAddrLine.x == 0) {
                                             xAnim1.start()
                                             //console.log("Anim1 start")
                                         } else {
@@ -654,12 +654,12 @@ ApplicationWindow {
                                 /* Set items visibility for layout 2 */
                                 for (var i = 0; i < diskP1.getListLength(
                                          ); i++) {
-                                    if (rep1.itemAt(i) !== null)
-                                        rep1.itemAt(i).visible = true
+                                    if (leftRepeatButt.itemAt(i) !== null)
+                                        leftRepeatButt.itemAt(i).visible = true
                                 }
 
                                 /* Load layout with disk choose */
-                                stack1.push(split5)
+                                leftAddrLine.push(leftChoose)
                             }
                         }
                     }
@@ -670,8 +670,8 @@ ApplicationWindow {
                         running: false
                         alwaysRunToEnd: true
                         NumberAnimation {
-                            from: stack1.x
-                            to: -(stack1.width * 0.8)
+                            from: leftAddrLine.x
+                            to: -(leftAddrLine.width * 0.8)
                             duration: 2000
                             easing.type: Easing.OutQuint
                         }
@@ -682,7 +682,7 @@ ApplicationWindow {
                         running: false
                         alwaysRunToEnd: true
                         NumberAnimation {
-                            from: stack1.x
+                            from: leftAddrLine.x
                             to: 0
                             duration: 2000
                             easing.type: Easing.OutQuint
@@ -692,13 +692,13 @@ ApplicationWindow {
 
                 /* Layout (2) of choose disk */
                 SplitView {
-                    id: split5
+                    id: leftChoose
 
                     Repeater {
-                        id: rep1
+                        id: leftRepeatButt
 
                         model: {
-                            if ((split5.width / diskP1.getListLength(
+                            if ((leftChoose.width / diskP1.getListLength(
                                      )) > lengthBut)
                                 diskP1.getListLength()
                             else {
@@ -711,16 +711,16 @@ ApplicationWindow {
                             visible: false
 
                             Layout.maximumWidth: {
-                                if ((split5.width / diskP1.getListLength(
+                                if ((leftChoose.width / diskP1.getListLength(
                                          )) > lengthBut)
-                                    split5.width / diskP1.getListLength()
+                                    leftChoose.width / diskP1.getListLength()
                                 else
                                     lengthBut
                             }
                             Layout.minimumWidth: {
-                                if ((split5.width / diskP1.getListLength(
+                                if ((leftChoose.width / diskP1.getListLength(
                                          )) > lengthBut)
-                                    split5.width / diskP1.getListLength()
+                                    leftChoose.width / diskP1.getListLength()
                                 else
                                     lengthBut
                             }
@@ -730,13 +730,13 @@ ApplicationWindow {
                                 hoverEnabled: true
                                 onClicked: {
                                     /* Change disk */
-                                    var x = tview1.getTab(
-                                                tview1.currentIndex).children[0].data[4]
+                                    var x = leftTabView.getTab(
+                                                leftTabView.currentIndex).children[0].data[4]
                                     x.changeDir(diskP1.diskList[index])
                                     /* Set disk path */
-                                    addr1.text = diskP1.diskList[index]
+                                    leftAddr.text = diskP1.diskList[index]
                                     /* Return to origin state */
-                                    stack1.pop(true)
+                                    leftAddrLine.pop(true)
                                 }
                             }
                         }
@@ -747,12 +747,12 @@ ApplicationWindow {
             /* Table of views (2 tabs) */
             TabView {
                 /* First tab */
-                id: tview1
+                id: leftTabView
                 //var clipboard = []
                 Tab {
                     title: "Tab 1"
                     Component {
-                        id: tab1
+                        id: leftFirstTab
                         TableView {
                             style: TableViewStyle{
                                 backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
@@ -763,7 +763,7 @@ ApplicationWindow {
                                 var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                 if(pattern.test(getCurrentRow())){
                                     background.opacity = 0.3
-                                    backgroundSourceLeft = "file:" + addr1.text + "/" +  getCurrentRow()
+                                    backgroundSourceLeft = "file:" + leftAddr.text + "/" +  getCurrentRow()
                                 }
                                 else{
                                     background.opacity = 0.0
@@ -840,7 +840,7 @@ ApplicationWindow {
                                     var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                     if(pattern.test(getCurrentRow())){
                                         background.opacity = 0.3
-                                        backgroundSourceLeft = "file:" + addr1.text + "/" +  getCurrentRow()
+                                        backgroundSourceLeft = "file:" + leftAddr.text + "/" +  getCurrentRow()
                                     }
                                     else{
                                         background.opacity = 0.0
@@ -849,18 +849,18 @@ ApplicationWindow {
                             }
 
                             Directory {
-                                id: temp
+                                id: leftTabDir
                             }
 
                             model: {
-                                temp.files
+                                leftTabDir.files
                             }
 
                             onActivated: {
-                                temp.changeDir(
-                                            temp.getDir(
+                                leftTabDir.changeDir(
+                                            leftTabDir.getDir(
                                                 ) + "/" + model[currentRow].wholeName)
-                                addr1.text = temp.getDir()
+                                leftAddr.text = leftTabDir.getDir()
 
                             }
 
@@ -898,15 +898,15 @@ ApplicationWindow {
                     }
 
                     onActiveChanged: {
-                        var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[4]
-                        addr1.text = x.getDir()
+                        var x = leftTabView.getTab(
+                                    leftTabView.currentIndex).children[0].data[4]
+                        leftAddr.text = x.getDir()
                     }
 
                     onActiveFocusChanged: {
-                        var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[4]
-                        addr1.text = x.getDir()
+                        var x = leftTabView.getTab(
+                                    leftTabView.currentIndex).children[0].data[4]
+                        leftAddr.text = x.getDir()
                     }
 
                 }
@@ -918,26 +918,26 @@ ApplicationWindow {
                     height: 20
 
                     onActiveChanged: {
-                        tview1.insertTab(tview1.count - 1,
-                                         "Tab " + tview1.count, tab1)
-                        tview1.currentIndex = tview1.count - 2
+                        leftTabView.insertTab(leftTabView.count - 1,
+                                         "Tab " + leftTabView.count, leftFirstTab)
+                        leftTabView.currentIndex = leftTabView.count - 2
 
-                        var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[4]
-                        addr1.text = x.getDir()
-                        console.log("Tab1");
+                        var x = leftTabView.getTab(
+                                    leftTabView.currentIndex).children[0].data[4]
+                        leftAddr.text = x.getDir()
+                        console.log("leftFirstTab");
                     }
 
                     onVisibleChanged: {
-                        if (tview1.currentIndex == (tview1.count - 1)) {
-                            tview1.insertTab(tview1.count - 1,
-                                             "Tab " + tview1.count, tab1)
-                            tview1.currentIndex = tview1.count - 2
+                        if (leftTabView.currentIndex == (leftTabView.count - 1)) {
+                            leftTabView.insertTab(leftTabView.count - 1,
+                                             "Tab " + leftTabView.count, leftFirstTab)
+                            leftTabView.currentIndex = leftTabView.count - 2
 
-                            var x = tview1.getTab(
-                                        tview1.currentIndex).children[0].data[4]
-                            addr1.text = x.getDir()
-                            console.log("Tab2");
+                            var x = leftTabView.getTab(
+                                        leftTabView.currentIndex).children[0].data[4]
+                            leftAddr.text = x.getDir()
+                            console.log("rightFirstTab");
                         }
                     }
                 }
@@ -963,10 +963,10 @@ ApplicationWindow {
                        }
 
                        Rectangle {
-                           id: neco
+                           id: leftTabHeader
                            visible: {
-                               if (tview1)
-                                   if (tview1.count > 2)
+                               if (leftTabView)
+                                   if (leftTabView.count > 2)
                                        true
                                    else
                                        false
@@ -984,19 +984,19 @@ ApplicationWindow {
                                hoverEnabled: true
                                anchors.fill: parent
                                onClicked: {
-                                   console.log(tview1.currentIndex + "|" + tview1.count);
+                                   console.log(leftTabView.currentIndex + "|" + leftTabView.count);
 
-                                   var currentIndex = tview1.currentIndex
-                                   tview1.currentIndex = 0;
-                                   if (tview1.currentIndex >= 0) {
-                                      var x = tview1.getTab(
-                                              tview1.currentIndex).children[0].data[4]
-                                      addr1.text = x.getDir()
+                                   var currentIndex = leftTabView.currentIndex
+                                   leftTabView.currentIndex = 0;
+                                   if (leftTabView.currentIndex >= 0) {
+                                      var x = leftTabView.getTab(
+                                              leftTabView.currentIndex).children[0].data[4]
+                                      leftAddr.text = x.getDir()
                                    }
-                                   tview1.removeTab(currentIndex)
+                                   leftTabView.removeTab(currentIndex)
                                }
-                               onEntered: neco.color = "black";
-                               onExited: neco.color = "grey";
+                               onEntered: leftTabHeader.color = "black";
+                               onExited: leftTabHeader.color = "grey";
                            }
                        }
                    }
@@ -1006,7 +1006,7 @@ ApplicationWindow {
 
         /* Right window ... will be duplicate of left window */
         SplitView {
-            id: split3
+            id: rightWindow
             orientation: Qt.Vertical
             width: parent.width / 2
             Layout.minimumWidth: parent.width / 2
@@ -1014,36 +1014,36 @@ ApplicationWindow {
 
             /* Address line and button */
             StackView {
-                id: stack2
-                initialItem: item1
+                id: rightAddrLine
+                initialItem: rightItem
                 Layout.minimumHeight: 25
                 Layout.maximumHeight: 25
 
                 /* Init layout */
                 SplitView {
-                    id: item2
+                    id: rightItem
                     anchors.fill: parent
                     Layout.minimumHeight: 25
                     Layout.maximumHeight: 25
 
                     /* Address line */
                     TextField {
-                        id: addr2
+                        id: rightAddr
                         style: TextFieldStyle{ }
                         placeholderText: "Address here"
                         Layout.minimumWidth: parent.width * 0.75
                         Layout.maximumWidth: parent.width * 0.75
 
                         onEditingFinished: {
-                            var x = tview2.getTab(
-                                    tview2.currentIndex).children[0].data[4]
-                                    x.changeDir(addr2.text)
+                            var x = rightTabView.getTab(
+                                    rightTabView.currentIndex).children[0].data[4]
+                                    x.changeDir(rightAddr.text)
                         }
                     }
 
                     /* Change disk */
                     Button {
-                        id: butt2
+                        id: rightButton
                         text: "Change disk"
                         visible: true
 
@@ -1054,7 +1054,7 @@ ApplicationWindow {
                                 /* If animations are complete */
                                 if (xAnim3.running == false)
                                     if (xAnim4.running == false)
-                                        if (stack2.x == 0) {
+                                        if (rightAddrLine.x == 0) {
                                             xAnim3.start()
                                             //console.log("Anim1 start")
                                         } else {
@@ -1065,12 +1065,12 @@ ApplicationWindow {
                                 /* Set items visibility for layout 2 */
                                 for (var i = 0; i < diskP1.getListLength(
                                          ); i++) {
-                                    if (rep2.itemAt(i) !== null)
-                                        rep2.itemAt(i).visible = true
+                                    if (rightRepeatButt.itemAt(i) !== null)
+                                        rightRepeatButt.itemAt(i).visible = true
                                 }
 
                                 /* Load layout with disk choose */
-                                stack2.push(split6)
+                                rightAddrLine.push(rightChoose)
                             }
                         }
                     }
@@ -1081,8 +1081,8 @@ ApplicationWindow {
                         running: false
                         alwaysRunToEnd: true
                         NumberAnimation {
-                            from: stack2.x
-                            to: -(stack2.width * 0.8)
+                            from: rightAddrLine.x
+                            to: -(rightAddrLine.width * 0.8)
                             duration: 2000
                             easing.type: Easing.OutQuint
                         }
@@ -1093,7 +1093,7 @@ ApplicationWindow {
                         running: false
                         alwaysRunToEnd: true
                         NumberAnimation {
-                            from: stack2.x
+                            from: rightAddrLine.x
                             to: 0
                             duration: 2000
                             easing.type: Easing.OutQuint
@@ -1103,13 +1103,13 @@ ApplicationWindow {
 
                 /* Layout (2) of choose disk */
                 SplitView {
-                    id: split6
+                    id: rightChoose
 
                     Repeater {
-                        id: rep2
+                        id: rightRepeatButt
 
                         model: {
-                            if ((split6.width / diskP1.getListLength(
+                            if ((rightChoose.width / diskP1.getListLength(
                                      )) > lengthBut)
                                 diskP6.getListLength()
                             else {
@@ -1122,16 +1122,16 @@ ApplicationWindow {
                             visible: false
 
                             Layout.maximumWidth: {
-                                if ((split6.width / diskP1.getListLength(
+                                if ((rightChoose.width / diskP1.getListLength(
                                          )) > lengthBut)
-                                    split6.width / diskP1.getListLength()
+                                    rightChoose.width / diskP1.getListLength()
                                 else
                                     lengthBut
                             }
                             Layout.minimumWidth: {
-                                if ((split6.width / diskP1.getListLength(
+                                if ((rightChoose.width / diskP1.getListLength(
                                          )) > lengthBut)
-                                    split6.width / diskP1.getListLength()
+                                    rightChoose.width / diskP1.getListLength()
                                 else
                                     lengthBut
                             }
@@ -1141,13 +1141,13 @@ ApplicationWindow {
                                 hoverEnabled: true
                                 onClicked: {
                                     /* Change disk */
-                                    var x = tview2.getTab(
-                                                tview2.currentIndex).children[0].data[4]
+                                    var x = rightTabView.getTab(
+                                                rightTabView.currentIndex).children[0].data[4]
                                     x.changeDir(diskP1.diskList[index])
                                     /* Set disk path */
-                                    addr2.text = diskP1.diskList[index]
+                                    rightAddr.text = diskP1.diskList[index]
                                     /* Return to origin state */
-                                    stack2.pop(true)
+                                    rightAddrLine.pop(true)
                                 }
                             }
                         }
@@ -1158,12 +1158,12 @@ ApplicationWindow {
             /* Table of views (2 tabs) */
             TabView {
                 /* First tab */
-                id: tview2
+                id: rightTabView
                 //var clipboard = []
                 Tab {
                     title: "Tab 1"
                     Component {
-                        id: tab2
+                        id: rightFirstTab
                         TableView {
                             style: TableViewStyle{
                                 backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
@@ -1174,7 +1174,7 @@ ApplicationWindow {
                                 var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                 if(pattern.test(getCurrentRow())){
                                     background.opacity = 0.3
-                                    backgroundSourceRight = "file:" + addr2.text + "/" +  getCurrentRow()
+                                    backgroundSourceRight = "file:" + rightAddr.text + "/" +  getCurrentRow()
                                 }
                                 else{
                                     background.opacity = 0.0
@@ -1252,7 +1252,7 @@ ApplicationWindow {
                                     var pattern = /^.*\.(png|jpg|jpeg|JPG|PNG|JPEG)/;
                                     if(pattern.test(getCurrentRow())){
                                         background.opacity = 0.3
-                                        backgroundSourceRight = "file:" + addr2.text + "/" +  getCurrentRow()
+                                        backgroundSourceRight = "file:" + rightAddr.text + "/" +  getCurrentRow()
                                     }
                                     else{
                                         background.opacity = 0.0
@@ -1261,18 +1261,18 @@ ApplicationWindow {
                             }
 
                             Directory {
-                                id: temp2
+                                id: rightTabDir
                             }
 
                             model: {
-                                temp2.files
+                                rightTabDir.files
                             }
 
                             onActivated: {
-                                temp2.changeDir(
-                                            temp2.getDir(
+                                rightTabDir.changeDir(
+                                            rightTabDir.getDir(
                                                 ) + "/" + model[currentRow].wholeName)
-                                addr2.text = temp2.getDir()
+                                rightAddr.text = rightTabDir.getDir()
 
                             }
 
@@ -1310,15 +1310,15 @@ ApplicationWindow {
                     }
 
                     onActiveChanged: {
-                        var x = tview2.getTab(
-                                    tview2.currentIndex).children[0].data[4]
-                        addr2.text = x.getDir()
+                        var x = rightTabView.getTab(
+                                    rightTabView.currentIndex).children[0].data[4]
+                        rightAddr.text = x.getDir()
                     }
 
                     onActiveFocusChanged: {
-                        var x = tview2.getTab(
-                                    tview2.currentIndex).children[0].data[4]
-                        addr2.text = x.getDir()
+                        var x = rightTabView.getTab(
+                                    rightTabView.currentIndex).children[0].data[4]
+                        rightAddr.text = x.getDir()
                     }
 
                 }
@@ -1330,26 +1330,26 @@ ApplicationWindow {
                     height: 20
 
                     onActiveChanged: {
-                        tview2.insertTab(tview2.count - 1,
-                                         "Tab " + tview2.count, tab2)
-                        tview2.currentIndex = tview2.count - 2
+                        rightTabView.insertTab(rightTabView.count - 1,
+                                         "Tab " + rightTabView.count, rightFirstTab)
+                        rightTabView.currentIndex = rightTabView.count - 2
 
-                        var x = tview1.getTab(
-                                    tview1.currentIndex).children[0].data[4]
-                        addr1.text = x.getDir()
-                        console.log("Tab2");
+                        var x = leftTabView.getTab(
+                                    leftTabView.currentIndex).children[0].data[4]
+                        leftAddr.text = x.getDir()
+                        console.log("rightFirstTab");
                     }
 
                     onVisibleChanged: {
-                        if (tview2.currentIndex == (tview2.count - 1)) {
-                            tview2.insertTab(tview2.count - 1,
-                                             "Tab " + tview2.count, tab1)
-                            tview2.currentIndex = tview2.count - 2
+                        if (rightTabView.currentIndex == (rightTabView.count - 1)) {
+                            rightTabView.insertTab(rightTabView.count - 1,
+                                             "Tab " + rightTabView.count, leftFirstTab)
+                            rightTabView.currentIndex = rightTabView.count - 2
 
-                            var x = tview2.getTab(
-                                        tview2.currentIndex).children[0].data[4]
-                            addr2.text = x.getDir()
-                            console.log("Tab2");
+                            var x = rightTabView.getTab(
+                                        rightTabView.currentIndex).children[0].data[4]
+                            rightAddr.text = x.getDir()
+                            console.log("rightFirstTab");
                         }
                     }
                 }
@@ -1375,10 +1375,10 @@ ApplicationWindow {
                        }
 
                        Rectangle {
-                           id: neco2
+                           id: rightTabHeader
                            visible: {
-                               if (tview2)
-                                   if (tview2.count > 2)
+                               if (rightTabView)
+                                   if (rightTabView.count > 2)
                                        true
                                    else
                                        false
@@ -1396,19 +1396,19 @@ ApplicationWindow {
                                hoverEnabled: true
                                anchors.fill: parent
                                onClicked: {
-                                   console.log(tview2.currentIndex + "|" + tview2.count);
+                                   console.log(rightTabView.currentIndex + "|" + rightTabView.count);
 
-                                   var currentIndex = tview2.currentIndex
-                                   tview2.currentIndex = 0;
-                                   if (tview2.currentIndex >= 0) {
-                                      var x = tview2.getTab(
-                                              tview2.currentIndex).children[0].data[4]
-                                      addr2.text = x.getDir()
+                                   var currentIndex = rightTabView.currentIndex
+                                   rightTabView.currentIndex = 0;
+                                   if (rightTabView.currentIndex >= 0) {
+                                      var x = rightTabView.getTab(
+                                              rightTabView.currentIndex).children[0].data[4]
+                                      rightAddr.text = x.getDir()
                                    }
-                                   tview2.removeTab(currentIndex)
+                                   rightTabView.removeTab(currentIndex)
                                }
-                               onEntered: neco2.color = "black";
-                               onExited: neco2.color = "grey";
+                               onEntered: rightTabHeader.color = "black";
+                               onExited: rightTabHeader.color = "grey";
                            }
                        }
                    }
