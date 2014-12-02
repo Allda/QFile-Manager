@@ -11,5 +11,9 @@
         <file>icons/music.png</file>
         <file>icons/picture.png</file>
         <file>icons/back.png</file>
+        <file>icons/new_file.png</file>
+        <file>icons/up.png</file>
+        <file>icons/refresh_icon.png</file>
+        <file>icons/color.png</file>
     </qresource>
 </RCC>

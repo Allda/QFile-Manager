@@ -695,7 +695,7 @@ ApplicationWindow {
                             width: 40
                             height: 40
                             y: 5
-                            source: "icons/new.png"
+                            source: "icons/new_file.png"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
@@ -715,7 +715,7 @@ ApplicationWindow {
                 text: "Open file"
                 iconSource: "icons/open.png"
             }*/
-            ToolButton {
+            /*ToolButton {
                 implicitWidth: 55
                 implicitHeight: 70
                 tooltip: "Save the file"
@@ -744,7 +744,7 @@ ApplicationWindow {
                          }
                     }
                 }
-            }
+            }*/
 
             ToolButton {
                 implicitWidth: 55
@@ -762,7 +762,7 @@ ApplicationWindow {
                             width: 40
                             height: 40
                             y: 5
-                            source: "icons/open.png"
+                            source: "icons/up.png"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
@@ -799,7 +799,7 @@ ApplicationWindow {
                             width: 40
                             height: 40
                             y: 5
-                            source: "icons/film.png"
+                            source: "icons/refresh_icon.png"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
@@ -830,7 +830,7 @@ ApplicationWindow {
                             width: 40
                             height: 40
                             y: 5
-                            source: "icons/film.png"
+                            source: "icons/color.png"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
