@@ -32,6 +32,12 @@ ApplicationWindow {
     property real backgroundColorOfBothPanelsRed: 0.9
     property real backgroundColorOfBothPanelsGreen: 0.9
     property real backgroundColorOfBothPanelsBlue: 0.9
+    property real backgroundTextColorOfWholeAppRed: 0.1
+    property real backgroundTextColorOfWholeAppGreen: 0.1
+    property real backgroundTextColorOfWholeAppBlue: 0.1
+    property real backgroundTextColorOfBothPanelsRed: 0.1
+    property real backgroundTextColorOfBothPanelsGreen: 0.1
+    property real backgroundTextColorOfBothPanelsBlue: 0.1
 
     Menu {
         title: "Edit"
@@ -483,10 +489,134 @@ ApplicationWindow {
                     }
                 }
             }
+            Tab{
+                title: "App text"
+                Rectangle{
+                    anchors.fill: parent
+                    anchors.topMargin: 10
+                    Text {
+                        id: appTextColorRedText
+                        text: "Red"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: appTextColorRedSlider
+                        anchors.left: appTextColorRedText.right
+                        width: parent.width - 50
+                        stepSize: 0.005
+                        value: backgroundTextColorOfWholeAppRed
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundTextColorOfWholeAppRed = value
+                    }
+                    Text {
+                        id: appTextColorGreenText
+                        anchors.top: appTextColorRedText.bottom
+                        text: "Green"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: appTextColorGreenSlider
+                        anchors.left: appTextColorGreenText.right
+                        anchors.top: appTextColorRedText.bottom
+                        width: parent.width - 50
+                        stepSize: 0.005
+                        value: backgroundTextColorOfWholeAppGreen
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundTextColorOfWholeAppGreen = value
+                    }
+                    Text {
+                        id: appTextColorBlueText
+                        anchors.top: appTextColorGreenText.bottom
+                        text: "Blue"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: appTextColorBlueSlider
+                        anchors.left: appTextColorBlueText.right
+                        anchors.top: appTextColorGreenText.bottom
+                        width: parent.width - 50
+                        stepSize: 0.005
+                        value: backgroundTextColorOfWholeAppBlue
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundTextColorOfWholeAppBlue = value
+                    }
+                }
+            }
+            Tab{
+                title: "Panels"
+                Rectangle{
+                    anchors.fill: parent
+                    anchors.topMargin: 10
+                    Text {
+                        id: panelsTextColorRedText
+                        text: "Red"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: panelsTextColorRedSlider
+                        anchors.left: panelsTextColorRedText.right
+                        width: parent.width - 50
+                        stepSize: 0.005
+                        value: backgroundTextColorOfBothPanelsRed
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundTextColorOfBothPanelsRed = value
+                    }
+                    Text {
+                        id: panelsTextColorGreenText
+                        anchors.top: panelsTextColorRedText.bottom
+                        text: "Green"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: panelsTextColorGreenSlider
+                        anchors.left: panelsTextColorGreenText.right
+                        anchors.top: panelsTextColorRedText.bottom
+                        width: parent.width - 50
+                        stepSize: 0.005
+                        value: backgroundTextColorOfBothPanelsGreen
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundTextColorOfBothPanelsGreen = value
+                    }
+                    Text {
+                        id: panelsTextColorBlueText
+                        anchors.top: panelsTextColorGreenText.bottom
+                        text: "Blue"
+                        height: 40
+                        width: 50
+                    }
+
+                    Slider{
+                        id: panelsTextColorBlueSlider
+                        anchors.left: panelsTextColorBlueText.right
+                        anchors.top: panelsTextColorGreenText.bottom
+                        width: parent.width - 50
+                        stepSize: 0.005
+                        value: backgroundTextColorOfBothPanelsBlue
+                        maximumValue: 1
+                        minimumValue: 0
+                        onValueChanged: backgroundTextColorOfBothPanelsBlue = value
+                    }
+                }
+            }
         }
     }
 
-    menuBar: MenuBar {
+ /*   menuBar: MenuBar {
         Menu {
             title: "File"
 
@@ -536,50 +666,183 @@ ApplicationWindow {
             }
         }
     }
-
+*/
     /*  */
     toolBar: ToolBar {
         id: tool
         style: ToolBarStyle{
             background: Rectangle{color: Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)}
         }
+        height: 75
         RowLayout {
             width: parent.width
             ToolButton {
-                text: "New file"
-                tooltip: text
-                iconSource: "icons/new.png"
-                //iconSource: "icons/add26.png"
+                implicitWidth: 55
+                implicitHeight: 70
                 onClicked: newFile()
+
+                anchors.rightMargin: 15
+                style: ButtonStyle{
+                    background: Rectangle{
+                        width: 55
+                        height: 65
+                        color: control.hovered ? Qt.rgba(backgroundColorOfWholeAppRed + 0.05,backgroundColorOfWholeAppGreen + 0.05,backgroundColorOfWholeAppBlue + 0.05,1) : Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
+                        Image{
+                            width: 40
+                            height: 40
+                            y: 5
+                            source: "icons/new.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                              text: "New file"
+                              font.pointSize: 8
+                              style: control.hovered ? Text.Raised : Text.Normal
+                              styleColor: "#999"
+                              color:Qt.rgba(backgroundTextColorOfWholeAppRed,backgroundTextColorOfWholeAppGreen,backgroundTextColorOfWholeAppBlue,1)
+                              y: 51
+                              //anchors.bottom: parent.bottom
+                              anchors.horizontalCenter: parent.horizontalCenter
+                         }
+                    }
+                }
             }
             /*ToolButton {
                 text: "Open file"
                 iconSource: "icons/open.png"
             }*/
             ToolButton {
-                text: "Save file"
-                tooltip: text
-                iconSource: "icons/save.png"
+                implicitWidth: 55
+                implicitHeight: 70
+                tooltip: "Save the file"
+                anchors.rightMargin: 15
+                style: ButtonStyle{
+                    background: Rectangle{
+                        width: 55
+                        height: 65
+                        color: control.hovered ? Qt.rgba(backgroundColorOfWholeAppRed + 0.05,backgroundColorOfWholeAppGreen + 0.05,backgroundColorOfWholeAppBlue + 0.05,1) : Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
+                        Image{
+                            width: 40
+                            height: 40
+                            y: 5
+                            source: "icons/save.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                              text: "Save file"
+                              font.pointSize: 8
+                              style: control.hovered ? Text.Raised : Text.Normal
+                              styleColor: "#999"
+                              y: 51
+                              color: Qt.rgba(backgroundTextColorOfWholeAppRed,backgroundTextColorOfWholeAppGreen,backgroundTextColorOfWholeAppBlue,1)
+                              //anchors.bottom: parent.bottom
+                              anchors.horizontalCenter: parent.horizontalCenter
+                         }
+                    }
+                }
             }
 
             ToolButton {
-                text: "Up"
-                tooltip: text
-                iconSource: "icons/open.png"
+                implicitWidth: 55
+                implicitHeight: 70
+                tooltip: "Go to folder above"
                 //iconSource: "icons/upload58.png"
                 onClicked: cdUp()
+                anchors.rightMargin: 15
+                style: ButtonStyle{
+                    background: Rectangle{
+                        width: 55
+                        height: 65
+                        color: control.hovered ? Qt.rgba(backgroundColorOfWholeAppRed + 0.05,backgroundColorOfWholeAppGreen + 0.05,backgroundColorOfWholeAppBlue + 0.05,1) : Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
+                        Image{
+                            width: 40
+                            height: 40
+                            y: 5
+                            source: "icons/open.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                              text: "Up"
+                              font.pointSize: 8
+                              style: control.hovered ? Text.Raised : Text.Normal
+                              styleColor: "#999"
+                              y: 51
+                              color: Qt.rgba(backgroundTextColorOfWholeAppRed,backgroundTextColorOfWholeAppGreen,backgroundTextColorOfWholeAppBlue,1)
+                              //anchors.bottom: parent.bottom
+                              anchors.horizontalCenter: parent.horizontalCenter
+                         }
+                    }
+                }
             }
             ToolButton {
-                text: "Refresh"
-                tooltip: text
-                iconSource: "icons/film.png"
+                implicitWidth: 55
+                implicitHeight: 70
+                tooltip: "Refresh panels"
                 onClicked: {
                     if(getActivTab() === null)
                         return
                     var x = getActivTab().data[4]
                     x.refresh()
+
+                }
+                anchors.rightMargin: 15
+                style: ButtonStyle{
+                    background: Rectangle{
+                        width: 55
+                        height: 65
+                        color: control.hovered ? Qt.rgba(backgroundColorOfWholeAppRed + 0.05,backgroundColorOfWholeAppGreen + 0.05,backgroundColorOfWholeAppBlue + 0.05,1) : Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
+                        Image{
+                            width: 40
+                            height: 40
+                            y: 5
+                            source: "icons/film.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                              text: "Refresh"
+                              font.pointSize: 8
+                              style: control.hovered ? Text.Raised : Text.Normal
+                              styleColor: "#999"
+                              color: Qt.rgba(backgroundTextColorOfWholeAppRed,backgroundTextColorOfWholeAppGreen,backgroundTextColorOfWholeAppBlue,1)
+                              y: 51
+                              //anchors.bottom: parent.bottom
+                              anchors.horizontalCenter: parent.horizontalCenter
+                         }
+                    }
                 }
             }
+            ToolButton{
+                implicitWidth: 55
+                implicitHeight: 70
+                tooltip: "Color settings"
+                onClicked: changeColor();
+                anchors.rightMargin: 15
+                style: ButtonStyle{
+                    background: Rectangle{
+                        width: 55
+                        height: 65
+                        color: control.hovered ? Qt.rgba(backgroundColorOfWholeAppRed + 0.05,backgroundColorOfWholeAppGreen + 0.05,backgroundColorOfWholeAppBlue + 0.05,1) : Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
+                        Image{
+                            width: 40
+                            height: 40
+                            y: 5
+                            source: "icons/film.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                              text: "Colors"
+                              font.pointSize: 8
+                              style: control.hovered ? Text.Raised : Text.Normal
+                              styleColor: "#999"
+                              y: 51
+                              color: Qt.rgba(backgroundTextColorOfWholeAppRed,backgroundTextColorOfWholeAppGreen,backgroundTextColorOfWholeAppBlue,1)
+                              //anchors.bottom: parent.bottom
+                              anchors.horizontalCenter: parent.horizontalCenter
+                         }
+                    }
+                }
+            }
+
             Label {
                 Layout.fillWidth: true
                 anchors.right: parent.right
@@ -757,6 +1020,30 @@ ApplicationWindow {
                             style: TableViewStyle{
                                 backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
                                 alternateBackgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed-0.05,backgroundColorOfBothPanelsGreen-0.05,backgroundColorOfBothPanelsBlue-0.05, 1)
+                                textColor: Qt.rgba(backgroundTextColorOfBothPanelsRed,backgroundTextColorOfBothPanelsGreen,backgroundTextColorOfBothPanelsBlue,1)
+                                headerDelegate: Rectangle {
+                                    height: textItem.implicitHeight * 1.2
+                                    width: textItem.implicitWidth
+                                    color: "#777"
+                                    Text {
+                                        id: textItem
+                                        anchors.fill: parent
+                                        verticalAlignment: Text.AlignVCenter
+                                        horizontalAlignment: styleData.textAlignment
+                                        anchors.leftMargin: 12
+                                        text: styleData.value
+                                        color: "#ddd"
+                                    }
+                                    Rectangle {
+                                        anchors.right: parent.right
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        anchors.bottomMargin: 1
+                                        anchors.topMargin: 1
+                                        width: 1
+                                        color: "#ccc"
+                                    }
+                                }
                             }
 
                             onClicked: {
@@ -1168,6 +1455,30 @@ ApplicationWindow {
                             style: TableViewStyle{
                                 backgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed,backgroundColorOfBothPanelsGreen,backgroundColorOfBothPanelsBlue, 1)
                                 alternateBackgroundColor: Qt.rgba(backgroundColorOfBothPanelsRed-0.05,backgroundColorOfBothPanelsGreen-0.05,backgroundColorOfBothPanelsBlue-0.05, 1)
+                                textColor: Qt.rgba(backgroundTextColorOfBothPanelsRed,backgroundTextColorOfBothPanelsGreen,backgroundTextColorOfBothPanelsBlue,1)
+                                headerDelegate: Rectangle {
+                                    height: textItem.implicitHeight * 1.2
+                                    width: textItem.implicitWidth
+                                    color: "#777"
+                                    Text {
+                                        id: textItem
+                                        anchors.fill: parent
+                                        verticalAlignment: Text.AlignVCenter
+                                        horizontalAlignment: styleData.textAlignment
+                                        anchors.leftMargin: 12
+                                        text: styleData.value
+                                        color: "#ddd"
+                                    }
+                                    Rectangle {
+                                        anchors.right: parent.right
+                                        anchors.top: parent.top
+                                        anchors.bottom: parent.bottom
+                                        anchors.bottomMargin: 1
+                                        anchors.topMargin: 1
+                                        width: 1
+                                        color: "#ccc"
+                                    }
+                                }
                             }
 
                             onClicked: {
@@ -1427,7 +1738,7 @@ ApplicationWindow {
             width: parent.width
             Label {
                 id: label
-                text: "Zde muze byt cokoliv | ProgressBar muze ukazovat symbolicky cas do dokonceni operace"
+                text: ""
                 Layout.fillWidth: true
                 elide: Text.ElideMiddle
             }
