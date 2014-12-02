@@ -20,6 +20,14 @@ void Directory::loadFiles(){
     this->m_files.clear();
     for(int i = 1; i < files.count();i++){
         //qDebug() << files.at(i);
+        QFileInfo fi(dir + "/" + files.at(i));
+        if(fi.isDir())
+        this->m_files.append(new File(files.at(i), this->dir));
+    }
+    for(int i = 1; i < files.count();i++){
+        //qDebug() << files.at(i);
+        QFileInfo fi(dir + "/" + files.at(i));
+        if(!fi.isDir())
         this->m_files.append(new File(files.at(i), this->dir));
     }
     emit filesChanged ();
