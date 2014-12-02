@@ -372,7 +372,7 @@ ApplicationWindow {
         id: helpDialog
         title: "Help"
         height: 210
-        width: 300
+        width: 350
 
         Column {
 
@@ -380,6 +380,7 @@ ApplicationWindow {
             Text {
                 anchors.topMargin: 15
                 anchors.leftMargin: 15
+                anchors.rightMargin: 15
                 text: "Vitejte v aplikaci FileManager v1.0!\n\n" +
                       "Klávesové zkratky:\n\n" +
                       "CTRL + C => Kopírování\n" +
@@ -404,7 +405,7 @@ ApplicationWindow {
         id: colorsDialog
         title: "Change Color"
         height: 210
-        width: 300
+        width: 390
         standardButtons: StandardButton.Ok | StandardButton.Cancel
         TabView{
             anchors.fill: parent
@@ -595,7 +596,7 @@ ApplicationWindow {
                 }
             }
             Tab{
-                title: "Panels"
+                title: "Panels text"
                 Rectangle{
                     anchors.fill: parent
                     anchors.topMargin: 10
@@ -1178,7 +1179,7 @@ ApplicationWindow {
                                     // CTRL + ->
                                     if (event.key === Qt.Key_Right) {
                                         copyCutFromTo(getLeftTab(), getRightTab(), false)
-                                        console.log('Copy')
+                                        //console.log('Copy')
 
                                         event.accepted = true
                                     }
@@ -1187,7 +1188,7 @@ ApplicationWindow {
                                     // ALT + ->
                                     if (event.key === Qt.Key_Right) {
                                         copyCutFromTo(getLeftTab(), getRightTab(), true)
-                                        console.log('Cut')
+                                        //console.log('Cut')
 
                                         event.accepted = true
                                     }
@@ -1273,7 +1274,7 @@ ApplicationWindow {
                 /* Tab plus */
                 Tab {
                     title: "+"
-                    width: text.width + 24
+                    //width: text.width + 24
                     height: 20
 
                     onActiveChanged: {
@@ -1284,7 +1285,7 @@ ApplicationWindow {
                         var x = leftTabView.getTab(
                                     leftTabView.currentIndex).children[0].data[4]
                         leftAddr.text = x.getDir()
-                        console.log("leftFirstTab");
+                        //console.log("leftFirstTab");
                     }
 
                     onVisibleChanged: {
@@ -1296,7 +1297,7 @@ ApplicationWindow {
                             var x = leftTabView.getTab(
                                         leftTabView.currentIndex).children[0].data[4]
                             leftAddr.text = x.getDir()
-                            console.log("rightFirstTab");
+                            //console.log("rightFirstTab");
                         }
                     }
                 }
@@ -1343,7 +1344,7 @@ ApplicationWindow {
                                hoverEnabled: true
                                anchors.fill: parent
                                onClicked: {
-                                   console.log(leftTabView.currentIndex + "|" + leftTabView.count);
+                                   //console.log(leftTabView.currentIndex + "|" + leftTabView.count);
 
                                    var currentIndex = leftTabView.currentIndex
                                    leftTabView.currentIndex = 0;
@@ -1470,7 +1471,7 @@ ApplicationWindow {
                         model: {
                             if ((rightChoose.width / diskP1.getListLength(
                                      )) > lengthBut)
-                                diskP6.getListLength()
+                                diskP1.getListLength()
                             else {
                                 3
                             }
@@ -1609,7 +1610,7 @@ ApplicationWindow {
                                     // CTRL + ->
                                     if (event.key === Qt.Key_Left) {
                                         copyCutFromTo(getRightTab(), getLeftTab(), false)
-                                        console.log('Copy')
+                                        //console.log('Copy')
 
                                         event.accepted = true
                                     }
@@ -1618,7 +1619,7 @@ ApplicationWindow {
                                     // ALT + ->
                                     if (event.key === Qt.Key_Left) {
                                         copyCutFromTo(getRightTab(), getLeftTab(), true)
-                                        console.log('Cut')
+                                        //console.log('Cut')
 
                                         event.accepted = true
                                     }
@@ -1704,7 +1705,7 @@ ApplicationWindow {
                 /* Tab plus */
                 Tab {
                     title: "+"
-                    width: text.width + 24
+                    //width: text.width + 24
                     height: 20
 
                     onActiveChanged: {
@@ -1715,7 +1716,7 @@ ApplicationWindow {
                         var x = leftTabView.getTab(
                                     leftTabView.currentIndex).children[0].data[4]
                         leftAddr.text = x.getDir()
-                        console.log("rightFirstTab");
+                        //console.log("rightFirstTab");
                     }
 
                     onVisibleChanged: {
@@ -1727,7 +1728,7 @@ ApplicationWindow {
                             var x = rightTabView.getTab(
                                         rightTabView.currentIndex).children[0].data[4]
                             rightAddr.text = x.getDir()
-                            console.log("rightFirstTab");
+                            //console.log("rightFirstTab");
                         }
                     }
                 }
@@ -1774,7 +1775,7 @@ ApplicationWindow {
                                hoverEnabled: true
                                anchors.fill: parent
                                onClicked: {
-                                   console.log(rightTabView.currentIndex + "|" + rightTabView.count);
+                                   //console.log(rightTabView.currentIndex + "|" + rightTabView.count);
 
                                    var currentIndex = rightTabView.currentIndex
                                    rightTabView.currentIndex = 0;
