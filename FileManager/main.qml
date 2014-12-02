@@ -297,11 +297,8 @@ ApplicationWindow {
             }
         }
 
-        onButtonClicked: {
-            if (clickedButton == StandardButton.Ok) {
-                getActivTab().data[4].rename(lastFile, edtInput.text)
-            }
-        }
+        onAccepted: getActivTab().data[4].rename(lastFile, edtInput.text)
+
     }
 
     Dialog {
@@ -321,15 +318,25 @@ ApplicationWindow {
                 id: newFolderInput
                 width: parent.width * 0.75
                 focus: true
+                onFocusChanged: console.log("Focus changed " + focus)
             }
         }
 
-        onButtonClicked: {
-            if (clickedButton == StandardButton.Ok) {
-                getActivTab().data[4].newFolder(newFolderInput.text)
+        onVisibleChanged: newFolderInput.focus = true
+
+        onVisibilityChanged: {
+            if(visible === true){
+                newFolderInput.text = ""
+                newFolderInput.forceActiveFocus()
             }
-            newFolderInput.text = ""
+
         }
+
+
+        onAccepted:{
+            getActivTab().data[4].newFolder(newFolderInput.text)
+        }
+
     }
 
     Dialog {
@@ -353,12 +360,13 @@ ApplicationWindow {
             }
         }
 
-        onButtonClicked: {
-            if (clickedButton == StandardButton.Ok) {
-                getActivTab().data[4].newFile(newFileInput.text)
-            }
+        onVisibilityChanged: {
+            if(visible === true)
             newFileInput.text = ""
         }
+
+        onAccepted: getActivTab().data[4].newFile(newFileInput.text)
+
     }
 
     Dialog {
