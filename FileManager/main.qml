@@ -73,7 +73,6 @@ ApplicationWindow {
         MenuItem {
             id: deleteOpt
             text: "Delete"
-            //shortcut: "Ctrl+C"
             onTriggered: {
                 showDeleteDialog()
             }
@@ -83,13 +82,12 @@ ApplicationWindow {
             id: renameOpt
             enabled: false
             text: "Rename"
-            //shortcut: "Ctrl+C"
             onTriggered: {
                 lastFile = getCurrentRow()
                 edtInput.text = lastFile
                 edtInput.selectAll()
-                renameDialog.visible
                 renameDialog.open()
+                edtInput.focus = true
             }
         }
 
@@ -186,13 +184,14 @@ ApplicationWindow {
     }
 
     function newFolder() {
-        newFolderDialog.visible = true
+        //newFolderDialog.visible = true
         newFolderDialog.open()
+        newFolderInput.focus = true
     }
 
     function newFile() {
-        newFileDialog.visible = true
         newFileDialog.open()
+        newFileInput.focus = true
     }
 
     function changeColor(){
@@ -322,16 +321,12 @@ ApplicationWindow {
                 id: newFolderInput
                 width: parent.width * 0.75
                 focus: true
-                onFocusChanged: console.log("Focus changed " + focus)
             }
         }
-
-        onVisibleChanged: newFolderInput.focus = true
 
         onVisibilityChanged: {
             if(visible === true){
                 newFolderInput.text = ""
-                newFolderInput.forceActiveFocus()
             }
 
         }
@@ -1092,7 +1087,6 @@ ApplicationWindow {
             TabView {
                 /* First tab */
                 id: leftTabView
-                //var clipboard = []
                 Tab {
                     title: "Tab 1"
                     Component {
@@ -1236,7 +1230,6 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 id: listMouseArea
                                 acceptedButtons: Qt.RightButton
-                                //propagateComposedEvents: true
                                 onClicked:  {
                                     if (mouse.button == Qt.RightButton) {
 
@@ -1255,10 +1248,8 @@ ApplicationWindow {
                                         }
                                         contextMenu.popup()
                                     }
-                                    //mouse.accepted = false
                                 }
-                                //onReleased: mouse.accepted = false
-                                //onPressAndHold:  mouse.accepted = false
+
                             }
 
 
@@ -1527,7 +1518,6 @@ ApplicationWindow {
             TabView {
                 /* First tab */
                 id: rightTabView
-                //var clipboard = []
                 Tab {
                     title: "Tab 1"
                     Component {
@@ -1672,7 +1662,6 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 id: listMouseArea
                                 acceptedButtons: Qt.RightButton
-                                //propagateComposedEvents: true
                                 onClicked:  {
                                     if (mouse.button == Qt.RightButton) {
 
@@ -1691,10 +1680,7 @@ ApplicationWindow {
                                         }
                                         contextMenu.popup()
                                     }
-                                    //mouse.accepted = false
                                 }
-                                //onReleased: mouse.accepted = false
-                                //onPressAndHold:  mouse.accepted = false
                             }
 
 
