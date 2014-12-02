@@ -261,6 +261,10 @@ ApplicationWindow {
         return a
     }
 
+    function helpVisible() {
+        helpDialog.visible = true
+        helpDialog.open()
+    }
 
     MessageDialog {
         id: removeDialog
@@ -359,6 +363,38 @@ ApplicationWindow {
             }
             newFileInput.text = ""
         }
+    }
+
+    Dialog {
+        id: helpDialog
+        title: "Help"
+        height: 210
+        width: 300
+
+        Column {
+
+            anchors.fill: parent
+            Text {
+                anchors.topMargin: 15
+                anchors.leftMargin: 15
+                text: "Vitejte v aplikaci FileManager v1.0!\n\n" +
+                      "Klávesové zkratky:\n\n" +
+                      "CTRL + C => Kopírování\n" +
+                      "CTRL + V => Vložit\n" +
+                      "CTRL + X => Vyjmout\n" +
+                      "CTRL + šipka vpravo|vlevo => Kopírovat + Vložit\n" +
+                      "ALT + šipka vpravo|vlevo => Vyjmout + Vložit\n"
+                height: 40
+            }
+        }
+
+        standardButtons: StandardButton.Ok
+
+        onButtonClicked: {
+            visible: false
+            helpDialog.close()
+        }
+
     }
 
     Dialog {
@@ -835,6 +871,38 @@ ApplicationWindow {
                         }
                         Text {
                               text: "Colors"
+                              font.pointSize: 8
+                              style: control.hovered ? Text.Raised : Text.Normal
+                              styleColor: "#999"
+                              y: 51
+                              color: Qt.rgba(backgroundTextColorOfWholeAppRed,backgroundTextColorOfWholeAppGreen,backgroundTextColorOfWholeAppBlue,1)
+                              //anchors.bottom: parent.bottom
+                              anchors.horizontalCenter: parent.horizontalCenter
+                         }
+                    }
+                }
+            }
+
+            ToolButton{
+                implicitWidth: 55
+                implicitHeight: 70
+                tooltip: "Help"
+                onClicked: helpVisible();
+                anchors.rightMargin: 15
+                style: ButtonStyle{
+                    background: Rectangle{
+                        width: 55
+                        height: 65
+                        color: control.hovered ? Qt.rgba(backgroundColorOfWholeAppRed + 0.05,backgroundColorOfWholeAppGreen + 0.05,backgroundColorOfWholeAppBlue + 0.05,1) : Qt.rgba(backgroundColorOfWholeAppRed,backgroundColorOfWholeAppGreen,backgroundColorOfWholeAppBlue,1)
+                        Image{
+                            width: 40
+                            height: 40
+                            y: 5
+                            source: "icons/film.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                              text: "Help"
                               font.pointSize: 8
                               style: control.hovered ? Text.Raised : Text.Normal
                               styleColor: "#999"
