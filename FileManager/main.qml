@@ -63,7 +63,11 @@ ApplicationWindow {
             id: pasteOpt
             text: "Paste"
             shortcut: "Ctrl+V"
-            onTriggered: paste()
+            onTriggered: {
+                paste()
+                getLeftTab().data[4].refresh()
+                getRightTab().data[4].refresh()
+            }
         }
 
         MenuItem {
