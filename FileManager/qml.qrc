@@ -15,5 +15,6 @@
         <file>icons/up.png</file>
         <file>icons/refresh_icon.png</file>
         <file>icons/color.png</file>
+        <file>icons/help.png</file>
     </qresource>
 </RCC>
