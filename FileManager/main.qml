@@ -884,6 +884,7 @@ ApplicationWindow {
             }
 
             ToolButton{
+                anchors.right: parent.right
                 implicitWidth: 55
                 implicitHeight: 70
                 tooltip: "Help"
@@ -898,7 +899,7 @@ ApplicationWindow {
                             width: 40
                             height: 40
                             y: 5
-                            source: "icons/film.png"
+                            source: "icons/help.png"
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
