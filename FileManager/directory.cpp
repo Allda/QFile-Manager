@@ -5,6 +5,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include "file.h"
+#include <thread>
+
 
 
 Directory::Directory()
@@ -12,6 +14,7 @@ Directory::Directory()
     this->dir = QDir::drives().at(0).absolutePath();
     qDebug() << QDir::drives().at(0).absolutePath();
     this->loadFiles();
+    connect(this, &Directory::workLoadChanged,this,&Directory::copyToDir);
 }
 
 void Directory::loadFiles(){
@@ -45,18 +48,34 @@ QString Directory::getDir(){
     return dir;
 }
 
-void Directory::copyToDir(QString file){
+void Directory::copy(QString file){
+    clipboardFiles.append(file);
+    qDebug() << file;
+    if(mutex.tryLock())
+        new std::thread(&Directory::copyToDir,this);
 
-    QFileInfo f(file);
-    qDebug() << file + " to " +this->dir + f.fileName();
-    if(f.isFile()){
-        QFile::copy(file, this->dir + '/' + f.fileName());
+}
+
+void Directory::copyToDir(){
+    for(int i = 0; i < clipboardFiles.length();i++){
+        QString file = clipboardFiles.first();
+        clipboardFiles.pop_front();
+        QFileInfo f(file);
+        qDebug() << file + " to " +this->dir + f.fileName();
+        if(f.isFile()){
+            QFile::copy(file, this->dir + '/' + f.fileName());
+        }
+        else{
+            QDir(this->dir).mkdir(f.fileName());
+            this->copyPath(file, this->dir+'/'+f.fileName());
+        }
+        //loadFiles();
+        m_progress = (i + 1) / files.length();
+        emit progressChanged();
     }
-    else{
-        QDir(this->dir).mkdir(f.baseName());
-        this->copyPath(file, this->dir+'/'+f.baseName());
-    }
-    loadFiles();
+    mutex.unlock();
+
+
 }
 
 void Directory::copyPath(QString src, QString dst)

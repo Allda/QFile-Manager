@@ -108,6 +108,7 @@ ApplicationWindow {
         cutFlag = false
         var x = getActivTab()
         addToClipboard(x)
+        console.log(clipboard)
     }
 
     function cut() {
@@ -120,14 +121,16 @@ ApplicationWindow {
         if(getActivTab() === null)
             return
         var x = getActivTab().data[4]
+
+        progressVal = 0.0
+
         for (var i = 0; i < clipboard.length; i++) {
             if (cutFlag)
                 x.moveToDir(clipboard[i])
             else
-                x.copyToDir(clipboard[i])
+                x.copy(clipboard[i])
             label.text = "Copy: " + clipboard[i]
-            progressVal = (i + 1) / clipboard.length
-            statusBar.update()
+            progresBar.model = x
 
 
         }
@@ -145,13 +148,14 @@ ApplicationWindow {
     function pasteToTab(tab) {
 
         var x = tab.data[4]
+        progresBar.value = x.m_progressVal = 0.0;
         for (var i = 0; i < clipboard.length; i++) {
             if (cutFlag)
-                x.moveToDir(clipboard[i])
+                x.move(clipboard[i])
             else
-                x.copyToDir(clipboard[i])
+                x.copy(clipboard[i])
             label.text = "Copy: " + clipboard[i]
-            progressVal = (i + 1) / clipboard.length
+            //progressVal = (i + 1) / clipboard.length
             statusBar.update()
 
 
@@ -1433,7 +1437,8 @@ ApplicationWindow {
             }
             ProgressBar {
                 id: progresBar
-                value: progressVal
+                property var model: getActivTab().data[4]
+                value: model.progress
             }
         }
     }
@@ -1451,4 +1456,5 @@ ApplicationWindow {
     DiskPartition {
         id: diskP1
     }
+
 }
