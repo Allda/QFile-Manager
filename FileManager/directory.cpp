@@ -44,7 +44,7 @@ void Directory::changeDir(QString newDir){
         loadFiles();
     }
     else{
-        QDesktopServices::openUrl(QUrl(newDir));
+        QDesktopServices::openUrl(QUrl("file:"+newDir));
     }
 
 }
