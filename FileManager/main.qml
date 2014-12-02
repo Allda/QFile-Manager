@@ -1196,6 +1196,12 @@ ApplicationWindow {
                                 if (event.key == Qt.Key_Backspace) {
                                     cdUp()
                                 }
+
+                                if(event.key === Qt.Key_Right){
+                                    rightTabView.focus = true
+                                    getRightTab().focus = true
+                                }
+
                                 if (event.key === Qt.Key_Delete) {
                                     showDeleteDialog()
                                 }
@@ -1626,6 +1632,10 @@ ApplicationWindow {
                                 }
                                 if (event.key == Qt.Key_Backspace) {
                                     cdUp()
+                                }
+                                if(event.key === Qt.Key_Left){
+                                    leftTabView.focus = true
+                                    getLeftTab().focus = true
                                 }
                                 if (event.key === Qt.Key_Delete) {
                                     showDeleteDialog()
